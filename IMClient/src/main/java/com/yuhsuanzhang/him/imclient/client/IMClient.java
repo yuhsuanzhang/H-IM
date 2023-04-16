@@ -1,3 +1,5 @@
+package com.yuhsuanzhang.him.imclient.client;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -5,20 +7,22 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+@Component
 public class IMClient {
 
-    private final String host;
-    private final int port;
+    @Value("${server.host}")
+    private String host;
+    @Value("${server.port}")
+    private int port;
 
-    public IMClient(String host, int port) {
-        this.host = host;
-        this.port = port;
-    }
-
+    @PostConstruct
     public void run() throws Exception {
         EventLoopGroup group = new NioEventLoopGroup();
         try {
@@ -50,11 +54,6 @@ public class IMClient {
         } finally {
             group.shutdownGracefully();
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        IMClient client = new IMClient("localhost", 8888);
-        client.run();
     }
 
     private static class IMClientHandler extends SimpleChannelInboundHandler<String> {

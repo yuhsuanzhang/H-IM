@@ -1,3 +1,5 @@
+package com.yuhsuanzhang.him.imserver.server;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -6,17 +8,25 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.LineBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Component
 public class IMServer {
 
     private final Map<String, ChannelHandlerContext> clients = new ConcurrentHashMap<>();
     private final Map<String, List<String>> groups = new ConcurrentHashMap<>();
 
-    public void run(int port) throws Exception {
+    @Value("${server.port:8888}")
+    private int port;
+
+    @PostConstruct
+    public void run() throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
@@ -124,8 +134,4 @@ public class IMServer {
 
     }
 
-    public static void main(String[] args) throws Exception {
-        IMServer server = new IMServer();
-        server.run(8888);
-    }
 }
