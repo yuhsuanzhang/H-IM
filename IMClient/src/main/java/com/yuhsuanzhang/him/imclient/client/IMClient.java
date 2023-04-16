@@ -1,5 +1,6 @@
 package com.yuhsuanzhang.him.imclient.client;
 
+import com.yuhsuanzhang.him.imclient.handle.IMClientHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -53,14 +54,6 @@ public class IMClient {
             }
         } finally {
             group.shutdownGracefully();
-        }
-    }
-
-    private static class IMClientHandler extends SimpleChannelInboundHandler<String> {
-
-        @Override
-        protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
-            System.out.println(msg);
         }
     }
 }
