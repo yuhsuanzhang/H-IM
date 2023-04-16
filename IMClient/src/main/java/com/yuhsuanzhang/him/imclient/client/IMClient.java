@@ -17,9 +17,9 @@ import java.io.InputStreamReader;
 @Component
 public class IMClient {
 
-    @Value("${server.host}")
+    @Value("${im.server.host:127.0.0.1}")
     private String host;
-    @Value("${server.port}")
+    @Value("${im.server.port:8888}")
     private int port;
 
     @PostConstruct

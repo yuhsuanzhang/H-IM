@@ -22,7 +22,7 @@ public class IMServer {
     private final Map<String, ChannelHandlerContext> clients = new ConcurrentHashMap<>();
     private final Map<String, List<String>> groups = new ConcurrentHashMap<>();
 
-    @Value("${server.port:8888}")
+    @Value("${im.server.port:8888}")
     private int port;
 
     @PostConstruct
