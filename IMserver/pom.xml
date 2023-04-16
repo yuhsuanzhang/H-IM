@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>IMClient</artifactId>
+    <artifactId>IMserver</artifactId>
 
     <dependencies>
         <dependency>
@@ -20,6 +20,11 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-codec</artifactId>
+            <version>4.1.78.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-handler</artifactId>
             <version>4.1.78.Final</version>
         </dependency>
     </dependencies>
