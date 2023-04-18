@@ -1,13 +1,16 @@
 package com.yuhsuanzhang.him.imclient.client;
 
 import com.yuhsuanzhang.him.imclient.handle.IMClientHandler;
+import com.yuhsuanzhang.him.imcommon.proto.IMMessageProto;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.codec.protobuf.ProtobufDecoder;
+import io.netty.handler.codec.protobuf.ProtobufEncoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -35,9 +38,11 @@ public class IMClient {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ch.pipeline()
-                                    .addLast("decoder", new StringDecoder())
-                                    .addLast("encoder", new StringEncoder())
-                                    .addLast("handler", (ChannelHandler) new IMClientHandler());
+                                    .addLast(new ProtobufVarint32FrameDecoder())
+                                    .addLast(new ProtobufDecoder(IMMessageProto.IMMessage.getDefaultInstance()))
+                                    .addLast(new ProtobufVarint32LengthFieldPrepender())
+                                    .addLast(new ProtobufEncoder())
+                                    .addLast((ChannelHandler) new IMClientHandler());
                         }
                     });
 
@@ -50,7 +55,12 @@ public class IMClient {
                 if (line == null || line.length() == 0 || line.trim().length() == 0) {
                     continue;
                 }
-                future.channel().writeAndFlush(line + "\r\n");
+                IMMessageProto.IMMessage imMessage = IMMessageProto
+                        .IMMessage
+                        .newBuilder()
+                        .setMessage(line)
+                        .build();
+                future.channel().writeAndFlush(imMessage);
             }
         } finally {
             group.shutdownGracefully();

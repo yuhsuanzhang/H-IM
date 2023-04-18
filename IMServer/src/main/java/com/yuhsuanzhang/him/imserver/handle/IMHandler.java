@@ -1,5 +1,6 @@
 package com.yuhsuanzhang.him.imserver.handle;
 
+import com.yuhsuanzhang.him.imcommon.proto.IMMessageProto;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -25,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 @ChannelHandler.Sharable
-public class IMHandler extends SimpleChannelInboundHandler<String> {
+public class IMHandler extends SimpleChannelInboundHandler<IMMessageProto.IMMessage> {
 
     @Resource
     private RedissonClient redissonClient;
@@ -55,8 +56,9 @@ public class IMHandler extends SimpleChannelInboundHandler<String> {
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, String message) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, IMMessageProto.IMMessage mes) throws Exception {
         //RMap<String, ChannelHandlerContext> clients = redissonClient.getMap("clients");
+        String message = mes.getMessage();
         RMap<String, List<String>> groups = redissonClient.getMap("groups");
         System.out.println("Received message [" + message + "]");
         String clientId = ctx.channel().id().asLongText();

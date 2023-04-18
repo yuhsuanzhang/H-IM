@@ -1,5 +1,6 @@
 package com.yuhsuanzhang.him.imserver.server;
 
+import com.yuhsuanzhang.him.imserver.handle.IMChannelInitializer;
 import com.yuhsuanzhang.him.imserver.handle.IMHandler;
 import com.yuhsuanzhang.him.imserver.handle.IMNioServerSocketChannel;
 import io.netty.bootstrap.ServerBootstrap;
@@ -28,27 +29,27 @@ public class IMServer {
     private String serverId;
 
     @Resource
-    private IMHandler imHandler;
+    private IMChannelInitializer imChannelInitializer;
 
     public void run() throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             ServerBootstrap bootstrap = new ServerBootstrap();
+            // 设置bossGroup和workerGroup
             bootstrap.group(bossGroup, workerGroup)
-                    .channel(IMNioServerSocketChannel.class)
-                    .option(ChannelOption.SO_BACKLOG, 128)
+                    // 设置NioServerSocketChannel为服务端channel类型
+                    .channel(NioServerSocketChannel.class)
+                    // 设置TCP连接数的请求等待队列的大小
+                    .option(ChannelOption.SO_BACKLOG, 1024)
+                    // 设置TCP连接的keepalive属性为true，保持TCP连接的活跃状态
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
-                    .childHandler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        protected void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline()
-                                    .addLast(new LineBasedFrameDecoder(1024))
-                                    .addLast(new StringDecoder())
-                                    .addLast(new StringEncoder())
-                                    .addLast(imHandler);
-                        }
-                    });
+                    // 设置接受缓冲区大小
+                    .childOption(ChannelOption.SO_RCVBUF, 32 * 1024)
+                    // 设置发送缓冲区大小
+                    .childOption(ChannelOption.SO_SNDBUF, 32 * 1024)
+                    // 设置ChannelInitializer，在客户端连接上来的时候调用
+                    .childHandler(imChannelInitializer);
 
             ChannelFuture future = bootstrap.bind(port).sync();
             System.out.println("IMServer started and listening on " + future.channel().localAddress());

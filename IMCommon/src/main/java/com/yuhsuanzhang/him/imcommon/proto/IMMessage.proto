@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package com.yuhsuanzhang.him.imcommon.proto;
+
+option java_package = "com.yuhsuanzhang.him.imcommon.proto";
+option java_outer_classname = "IMMessageProto";
+
+message IMMessage {
+  string channelId = 1;
+  string message = 2;
+}
