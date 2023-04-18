@@ -36,6 +36,7 @@ public class ConfigUtil {
                     CONFIG_MAP.put(name, properties.getProperty(name));
                 }
             }
+            log.info("ConfigUtil config map:{}", CONFIG_MAP);
         } catch (Exception e) {
             // 处理异常
             log.error("ConfigUtil set config map error:\n", e);
