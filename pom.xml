@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
+    <groupId>org.yuhsuanzhang</groupId>
     <artifactId>H-IM</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
@@ -22,36 +22,28 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-transport</artifactId>
-            <version>4.1.78.Final</version>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>3.16.1</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
         <dependency>
             <groupId>io.netty</groupId>
-            <artifactId>netty-codec</artifactId>
-            <version>4.1.78.Final</version>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.91.Final</version>
         </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-handler</artifactId>
-            <version>4.1.78.Final</version>
-        </dependency>
+
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.redisson/redisson-spring-boot-starter -->
-        <dependency>
-            <groupId>org.redisson</groupId>
-            <artifactId>redisson-spring-boot-starter</artifactId>
-            <version>3.17.7</version>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
 

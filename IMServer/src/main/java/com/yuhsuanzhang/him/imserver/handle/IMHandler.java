@@ -1,14 +1,20 @@
 package com.yuhsuanzhang.him.imserver.handle;
 
-import io.lettuce.core.RedisClient;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+//import org.redisson.api.RMap;
+//import org.redisson.api.RedissonClient;
+import io.netty.util.AttributeKey;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,22 +23,29 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Author yuxuan.zhang
  * @Description
  */
+@Component
 @ChannelHandler.Sharable
 public class IMHandler extends SimpleChannelInboundHandler<String> {
 
     @Resource
     private RedissonClient redissonClient;
-    private final RMap<String, ChannelHandlerContext> clients = redissonClient.getMap("clients");
-    private final RMap<String, List<String>> groups = redissonClient.getMap("groups");
+
+    @Value("${im.server.id:zyx}")
+    private String serverId;
+
+    Map<String,ChannelHandlerContext> clients = new ConcurrentHashMap<>();
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        //RMap<String, ChannelHandlerContext> clients = redissonClient.getMap("clients");
         clients.put(ctx.channel().id().asLongText(),ctx);
         System.out.println("Client " + ctx.channel().id().asLongText() + " connected.");
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        //RMap<String, ChannelHandlerContext> clients = redissonClient.getMap("clients");
+        RMap<String, List<String>> groups = redissonClient.getMap("groups");
         String clientId = ctx.channel().id().asLongText();
         clients.remove(clientId);
         System.out.println("Client " + clientId + " disconnected.");
@@ -43,6 +56,8 @@ public class IMHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String message) throws Exception {
+        //RMap<String, ChannelHandlerContext> clients = redissonClient.getMap("clients");
+        RMap<String, List<String>> groups = redissonClient.getMap("groups");
         System.out.println("Received message [" + message + "]");
         String clientId = ctx.channel().id().asLongText();
         if (message.startsWith("@")) {
@@ -51,7 +66,7 @@ public class IMHandler extends SimpleChannelInboundHandler<String> {
             if (index > 0) {
                 String targetClientId = message.substring(1, index);
                 String content = message.substring(index + 1);
-                ChannelHandlerContext targetCtx = clients.get(targetClientId);
+                ChannelHandlerContext targetCtx = clients.remove(targetClientId);
                 if (targetCtx != null) {
                     targetCtx.writeAndFlush("[" + clientId + "]: " + content + "\n");
                     ctx.writeAndFlush("You whispered to [" + targetClientId + "]: " + content + "\n");
@@ -71,7 +86,7 @@ public class IMHandler extends SimpleChannelInboundHandler<String> {
                 if (group != null) {
                     for (String memberId : group) {
                         if (!memberId.equals(clientId)) {
-                            ChannelHandlerContext memberCtx = clients.get(memberId);
+                            ChannelHandlerContext memberCtx = clients.remove(memberId);
                             if (memberCtx != null) {
                                 memberCtx.writeAndFlush("[" + clientId + "]: " + content + "\"");
                             }
@@ -95,7 +110,7 @@ public class IMHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        System.err.println("Client " + ctx.channel().id().asLongText() + " error: " + cause);
+        System.err.println("Client " + ctx.channel().id().asLongText() + " error: " + cause + "\n" + Arrays.toString(cause.getStackTrace()));
         ctx.close();
     }
 
