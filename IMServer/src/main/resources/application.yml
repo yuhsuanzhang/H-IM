@@ -8,6 +8,41 @@ spring:
     host: 127.0.0.1
     port: 6379
     password: ''
+  kafka:
+    template:
+      default-topic: test
+    bootstrap-servers: alikafka-pre-cn-5yd369pq3007-1.alikafka.aliyuncs.com:9093
+    jaas:
+      enabled: true
+      loginModule: org.apache.kafka.common.security.plain.PlainLoginModule
+      options:
+        username: alikafka_pre-cn-5yd369pq3007
+        password: zqOzox4cPKOvEu7IlLvuFmXxX3tx6nWm
+    consumer:
+      ssl:
+        truststoreLocation: file:/Users/bitmain/kafka.client.truststore.jks
+      properties:
+        sasl.mechanism: PLAIN
+        security.protocol: SASL_SSL
+        ssl.endpoint.identification.algorithm:
+      group-id: iam
+      max-poll-records: 2
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      ssl:
+        truststoreLocation: file:/Users/bitmain/kafka.client.truststore.jks
+      retries: 3
+      acks: 1
+      compression-type: lz4
+      buffer-memory: 33554432
+      batch-size: 51200
+      properties:
+        send.buffer.bytes: 262144
+        sasl.mechanism: PLAIN
+        security.protocol: SASL_SSL
+        ssl.endpoint.identification.algorithm:
 im:
   server:
     id: sercerId
+
