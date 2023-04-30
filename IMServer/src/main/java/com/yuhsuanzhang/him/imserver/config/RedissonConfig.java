@@ -1,6 +1,7 @@
 package com.yuhsuanzhang.him.imserver.config;
 
 import io.netty.channel.ChannelHandlerContext;
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.Redisson;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
@@ -21,6 +22,7 @@ import java.util.List;
  * @Description
  */
 @Configuration
+@Slf4j
 public class RedissonConfig implements InitializingBean {
 
     private static RedissonClient redissonClient;
@@ -45,7 +47,7 @@ public class RedissonConfig implements InitializingBean {
         if (!StringUtils.isEmpty(password)) {
             config.useSingleServer().setPassword(password);
         }
-        System.out.println("redisson created");
+        log.info("redisson created");
         redissonClient = Redisson.create(config);
     }
 
@@ -85,7 +87,7 @@ public class RedissonConfig implements InitializingBean {
 //        if (!StringUtils.isEmpty(password)) {
 //            config.useSingleServer().setPassword(password);
 //        }
-//        System.out.println("redisson config");
+//        log.info("redisson config");
 //        return Redisson.create(config);
 //    }
 //}

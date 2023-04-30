@@ -5,6 +5,7 @@
       <option name="excludeList">
         <list>
           <option value="com.google.protobuf:protobuf-java" />
+          <option value="com.alibaba:druid" />
         </list>
       </option>
     </inspection_tool>

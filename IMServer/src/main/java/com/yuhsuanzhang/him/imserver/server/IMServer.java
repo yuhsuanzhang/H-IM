@@ -1,5 +1,6 @@
 package com.yuhsuanzhang.him.imserver.server;
 
+import com.yuhsuanzhang.him.imserver.config.ZookeeperRegistry;
 import com.yuhsuanzhang.him.imserver.handle.IMChannelInitializer;
 import com.yuhsuanzhang.him.imserver.handle.IMHandler;
 import com.yuhsuanzhang.him.imserver.handle.IMNioServerSocketChannel;
@@ -12,6 +13,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LineBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RMap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @Component
+@Slf4j
 public class IMServer {
 
     @Value("${im.server.port:8888}")
@@ -28,12 +31,21 @@ public class IMServer {
     @Value("${im.server.id:zyx}")
     private String serverId;
 
+    @Value("${im.service.name:zyx}")
+    private String serviceName;
+
+    @Value("${im.service.address:127.0.0.1}")
+    private String serviceAddress;
+
     @Resource
     private IMChannelInitializer imChannelInitializer;
 
+    @Resource
+    private ZookeeperRegistry zookeeperRegistry;
+    private final EventLoopGroup bossGroup = new NioEventLoopGroup();
+    private final EventLoopGroup workerGroup = new NioEventLoopGroup();
+
     public void run() throws Exception {
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             ServerBootstrap bootstrap = new ServerBootstrap();
             // 设置bossGroup和workerGroup
@@ -52,12 +64,20 @@ public class IMServer {
                     .childHandler(imChannelInitializer);
 
             ChannelFuture future = bootstrap.bind(port).sync();
-            System.out.println("IMServer started and listening on " + future.channel().localAddress());
+            log.info("IMServer started and listening on " + future.channel().localAddress());
+
+            // 注册服务到Zookeeper
+            zookeeperRegistry.register(serviceName, String.format("%s:%s", serviceAddress, port));
 
             future.channel().closeFuture().sync();
         } finally {
-            workerGroup.shutdownGracefully();
-            bossGroup.shutdownGracefully();
         }
+    }
+
+    public void shutdown() {
+        // 关闭Netty服务
+        workerGroup.shutdownGracefully();
+        bossGroup.shutdownGracefully();
+        log.info("IMServer ended");
     }
 }

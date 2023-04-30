@@ -3,45 +3,105 @@ server:
 spring:
   main:
     web-application-type: SERVLET
+#  cloud:
+#    zookeeper:
+#      connect-string: 127.0.0.1:2181  # ZooKeeper 服务器地址
+#      block-until-connected: true  # 是否在启动时阻塞，直到连接到 ZooKeeper
+#      discovery:
+#        enabled: true  # 是否启用服务发现功能
+#        register: true  # 是否注册当前应用到 ZooKeeper
+#        prefer-ip-address: true  # 是否使用 IP 地址代替主机名
+#        instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}  # 实例 ID
+#      retry:
+#        max-retries: 3  # 最大重试次数
+#        interval-ms: 1000  # 重试间隔时间（毫秒）
+  zookeeper:
+    address: 127.0.0.1:2181
+    basePath: "/registry"
+    sessionTimeout: 10000
+    connectionTimeout: 10000
+    retryTimes: 3
+    sleepMsBetweenRetries: 1000
+  datasource:
+    mysql:
+      name: springboot
+      type: com.alibaba.druid.pool.DruidDataSource
+      #druid相关配置
+      druid:
+        #监控统计拦截的filters
+        filter: stat
+        #mysql驱动
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        #基本属性
+        #      url: jdbc:mysql://127.0.0.1:3306/bitmain_oa?useUnicode=true&character_set_server=utf8mb4&allowMultiQueries=true
+        #      username: root
+        #      password: $8?BmcT{7WT<pAi{k]
+        #配置初始化大小/最小/最大
+        initial-size: 1
+        min-idle: 1
+        max-active: 20
+        #获取连接等待超时时间
+        max-wait: 60000
+        #间隔多久进行一次检测，检测需要关闭的空闲连接
+        time-between-eviction-runs-millis: 60000
+      master:
+        username: dev
+        password: gPD2LP6etb4SJDS7P1JP
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://47.242.247.184:3306/portaldb?useUnicode=true&character_set_server=utf8mb4&allowMultiQueries=true
+      slave:
+        username: dev
+        password: gPD2LP6etb4SJDS7P1JP
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://47.242.247.184:3306/portaldb?useUnicode=true&character_set_server=utf8mb4&allowMultiQueries=true
   redis:
     database: 0
     host: 127.0.0.1
     port: 6379
     password: ''
   kafka:
-    template:
-      default-topic: test
-    bootstrap-servers: alikafka-pre-cn-5yd369pq3007-1.alikafka.aliyuncs.com:9093
-    jaas:
-      enabled: true
-      loginModule: org.apache.kafka.common.security.plain.PlainLoginModule
-      options:
-        username: alikafka_pre-cn-5yd369pq3007
-        password: zqOzox4cPKOvEu7IlLvuFmXxX3tx6nWm
-    consumer:
-      ssl:
-        truststoreLocation: file:/Users/bitmain/kafka.client.truststore.jks
-      properties:
-        sasl.mechanism: PLAIN
-        security.protocol: SASL_SSL
-        ssl.endpoint.identification.algorithm:
-      group-id: iam
-      max-poll-records: 2
+    bootstrap:
+      servers: 127.0.0.1:9092
     producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      ssl:
-        truststoreLocation: file:/Users/bitmain/kafka.client.truststore.jks
-      retries: 3
-      acks: 1
-      compression-type: lz4
-      buffer-memory: 33554432
-      batch-size: 51200
-      properties:
-        send.buffer.bytes: 262144
-        sasl.mechanism: PLAIN
-        security.protocol: SASL_SSL
-        ssl.endpoint.identification.algorithm:
+      retries: 0
+    consumer:
+      group-id: my-group-id
+  #  kafka:
+#    template:
+#      default-topic: test
+#    bootstrap-servers: alikafka-pre-cn-5yd369pq3007-1.alikafka.aliyuncs.com:9093
+#    jaas:
+#      enabled: true
+#      loginModule: org.apache.kafka.common.security.plain.PlainLoginModule
+#      options:
+#        username: alikafka_pre-cn-5yd369pq3007
+#        password: zqOzox4cPKOvEu7IlLvuFmXxX3tx6nWm
+#    consumer:
+#      ssl:
+#        truststoreLocation: file:/Users/bitmain/kafka.client.truststore.jks
+#      properties:
+#        sasl.mechanism: PLAIN
+#        security.protocol: SASL_SSL
+#        ssl.endpoint.identification.algorithm:
+#      group-id: iam
+#      max-poll-records: 2
+#    producer:
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#      ssl:
+#        truststoreLocation: file:/Users/bitmain/kafka.client.truststore.jks
+#      retries: 3
+#      acks: 1
+#      compression-type: lz4
+#      buffer-memory: 33554432
+#      batch-size: 51200
+#      properties:
+#        send.buffer.bytes: 262144
+#        sasl.mechanism: PLAIN
+#        security.protocol: SASL_SSL
+#        ssl.endpoint.identification.algorithm:
+  application:
+    name: HIM
 im:
   server:
     id: sercerId
