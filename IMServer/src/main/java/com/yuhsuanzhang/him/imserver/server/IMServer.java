@@ -2,24 +2,15 @@ package com.yuhsuanzhang.him.imserver.server;
 
 import com.yuhsuanzhang.him.imserver.config.ZookeeperRegistry;
 import com.yuhsuanzhang.him.imserver.handle.IMChannelInitializer;
-import com.yuhsuanzhang.him.imserver.handle.IMHandler;
-import com.yuhsuanzhang.him.imserver.handle.IMNioServerSocketChannel;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LineBasedFrameDecoder;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RMap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @Component
 @Slf4j

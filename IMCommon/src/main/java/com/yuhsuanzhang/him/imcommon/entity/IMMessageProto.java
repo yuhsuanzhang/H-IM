@@ -188,6 +188,16 @@ public final class IMMessageProto {
      * @return The version.
      */
     int getVersion();
+
+    /**
+     * <pre>
+     * 设备类型
+     * </pre>
+     *
+     * <code>int32 deviceType = 12;</code>
+     * @return The deviceType.
+     */
+    int getDeviceType();
   }
   /**
    * <pre>
@@ -501,6 +511,21 @@ public final class IMMessageProto {
       return version_;
     }
 
+    public static final int DEVICETYPE_FIELD_NUMBER = 12;
+    private int deviceType_ = 0;
+    /**
+     * <pre>
+     * 设备类型
+     * </pre>
+     *
+     * <code>int32 deviceType = 12;</code>
+     * @return The deviceType.
+     */
+    @java.lang.Override
+    public int getDeviceType() {
+      return deviceType_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -547,6 +572,9 @@ public final class IMMessageProto {
       }
       if (version_ != 0) {
         output.writeInt32(11, version_);
+      }
+      if (deviceType_ != 0) {
+        output.writeInt32(12, deviceType_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -600,6 +628,10 @@ public final class IMMessageProto {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(11, version_);
       }
+      if (deviceType_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(12, deviceType_);
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -646,6 +678,8 @@ public final class IMMessageProto {
       }
       if (getVersion()
           != other.getVersion()) return false;
+      if (getDeviceType()
+          != other.getDeviceType()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -689,6 +723,8 @@ public final class IMMessageProto {
       }
       hash = (37 * hash) + VERSION_FIELD_NUMBER;
       hash = (53 * hash) + getVersion();
+      hash = (37 * hash) + DEVICETYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getDeviceType();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -846,6 +882,7 @@ public final class IMMessageProto {
           updateTimeBuilder_ = null;
         }
         version_ = 0;
+        deviceType_ = 0;
         return this;
       }
 
@@ -917,6 +954,9 @@ public final class IMMessageProto {
         }
         if (((from_bitField0_ & 0x00000400) != 0)) {
           result.version_ = version_;
+        }
+        if (((from_bitField0_ & 0x00000800) != 0)) {
+          result.deviceType_ = deviceType_;
         }
       }
 
@@ -998,6 +1038,9 @@ public final class IMMessageProto {
         }
         if (other.getVersion() != 0) {
           setVersion(other.getVersion());
+        }
+        if (other.getDeviceType() != 0) {
+          setDeviceType(other.getDeviceType());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -1086,6 +1129,11 @@ public final class IMMessageProto {
                 bitField0_ |= 0x00000400;
                 break;
               } // case 88
+              case 96: {
+                deviceType_ = input.readInt32();
+                bitField0_ |= 0x00000800;
+                break;
+              } // case 96
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1967,6 +2015,50 @@ public final class IMMessageProto {
         onChanged();
         return this;
       }
+
+      private int deviceType_ ;
+      /**
+       * <pre>
+       * 设备类型
+       * </pre>
+       *
+       * <code>int32 deviceType = 12;</code>
+       * @return The deviceType.
+       */
+      @java.lang.Override
+      public int getDeviceType() {
+        return deviceType_;
+      }
+      /**
+       * <pre>
+       * 设备类型
+       * </pre>
+       *
+       * <code>int32 deviceType = 12;</code>
+       * @param value The deviceType to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDeviceType(int value) {
+        
+        deviceType_ = value;
+        bitField0_ |= 0x00000800;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 设备类型
+       * </pre>
+       *
+       * <code>int32 deviceType = 12;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDeviceType() {
+        bitField0_ = (bitField0_ & ~0x00000800);
+        deviceType_ = 0;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -2047,7 +2139,7 @@ public final class IMMessageProto {
     java.lang.String[] descriptorData = {
       "\n\017IMMessage.proto\022*com.yuhsuanzhang.him." +
       "imcommon.entity.proto\032\037google/protobuf/t" +
-      "imestamp.proto\"\263\002\n\tIMMessage\022\n\n\002id\030\001 \001(\003" +
+      "imestamp.proto\"\307\002\n\tIMMessage\022\n\n\002id\030\001 \001(\003" +
       "\022\017\n\007content\030\002 \001(\t\022\020\n\010senderId\030\003 \001(\003\022\022\n\nr" +
       "eceiverId\030\004 \001(\003\022\031\n\021previousMessageId\030\005 \001" +
       "(\003\022\024\n\014receiverType\030\006 \001(\005\022\023\n\013messageType\030" +
@@ -2055,8 +2147,9 @@ public final class IMMessageProto {
       "f.Timestamp\022.\n\ncreateTime\030\t \001(\0132\032.google" +
       ".protobuf.Timestamp\022.\n\nupdateTime\030\n \001(\0132" +
       "\032.google.protobuf.Timestamp\022\017\n\007version\030\013" +
-      " \001(\005B<\n*com.yuhsuanzhang.him.imcommon.en" +
-      "tity.protoB\016IMMessageProtob\006proto3"
+      " \001(\005\022\022\n\ndeviceType\030\014 \001(\005B<\n*com.yuhsuanz" +
+      "hang.him.imcommon.entity.protoB\016IMMessag" +
+      "eProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -2068,7 +2161,7 @@ public final class IMMessageProto {
     internal_static_com_yuhsuanzhang_him_imcommon_entity_proto_IMMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_yuhsuanzhang_him_imcommon_entity_proto_IMMessage_descriptor,
-        new java.lang.String[] { "Id", "Content", "SenderId", "ReceiverId", "PreviousMessageId", "ReceiverType", "MessageType", "SendTime", "CreateTime", "UpdateTime", "Version", });
+        new java.lang.String[] { "Id", "Content", "SenderId", "ReceiverId", "PreviousMessageId", "ReceiverType", "MessageType", "SendTime", "CreateTime", "UpdateTime", "Version", "DeviceType", });
     com.google.protobuf.TimestampProto.getDescriptor();
   }
 

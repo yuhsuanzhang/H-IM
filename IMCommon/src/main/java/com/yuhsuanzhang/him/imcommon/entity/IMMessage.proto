@@ -20,4 +20,5 @@ message IMMessage {
   google.protobuf.Timestamp createTime = 9; // 创建时间
   google.protobuf.Timestamp updateTime = 10; // 更新时间
   int32 version = 11; // 版本号
+  int32 deviceType = 12; // 设备类型
 }

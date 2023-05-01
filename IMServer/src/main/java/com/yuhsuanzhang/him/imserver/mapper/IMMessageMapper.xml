@@ -10,6 +10,7 @@
     <result column="receiver_type" jdbcType="TINYINT" property="receiverType" />
     <result column="message_type" jdbcType="TINYINT" property="messageType" />
     <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
+    <result column="device_type" jdbcType="TINYINT" property="deviceType" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="version" jdbcType="INTEGER" property="version" />
@@ -74,7 +75,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, content, sender_id, receiver_id, previous_message_id, receiver_type, message_type, 
-    send_time, create_time, update_time, version
+    send_time, device_type, create_time, update_time, version
   </sql>
   <select id="selectByExample" parameterType="com.yuhsuanzhang.him.imcommon.entity.IMMessageExample" resultMap="BaseResultMap">
     select
@@ -112,12 +113,12 @@
     </selectKey>
     insert into im_message (content, sender_id, receiver_id, 
       previous_message_id, receiver_type, message_type, 
-      send_time, create_time, update_time, 
-      version)
+      send_time, device_type, create_time, 
+      update_time, version)
     values (#{content,jdbcType=VARCHAR}, #{senderId,jdbcType=BIGINT}, #{receiverId,jdbcType=BIGINT}, 
       #{previousMessageId,jdbcType=BIGINT}, #{receiverType,jdbcType=TINYINT}, #{messageType,jdbcType=TINYINT}, 
-      #{sendTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{version,jdbcType=INTEGER})
+      #{sendTime,jdbcType=TIMESTAMP}, #{deviceType,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{version,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.yuhsuanzhang.him.imcommon.entity.IMMessage">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -145,6 +146,9 @@
       </if>
       <if test="sendTime != null">
         send_time,
+      </if>
+      <if test="deviceType != null">
+        device_type,
       </if>
       <if test="createTime != null">
         create_time,
@@ -177,6 +181,9 @@
       </if>
       <if test="sendTime != null">
         #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deviceType != null">
+        #{deviceType,jdbcType=TINYINT},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -222,6 +229,9 @@
       <if test="record.sendTime != null">
         send_time = #{record.sendTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.deviceType != null">
+        device_type = #{record.deviceType,jdbcType=TINYINT},
+      </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
@@ -246,6 +256,7 @@
       receiver_type = #{record.receiverType,jdbcType=TINYINT},
       message_type = #{record.messageType,jdbcType=TINYINT},
       send_time = #{record.sendTime,jdbcType=TIMESTAMP},
+      device_type = #{record.deviceType,jdbcType=TINYINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       version = #{record.version,jdbcType=INTEGER}
@@ -277,6 +288,9 @@
       <if test="sendTime != null">
         send_time = #{sendTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="deviceType != null">
+        device_type = #{deviceType,jdbcType=TINYINT},
+      </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -298,6 +312,7 @@
       receiver_type = #{receiverType,jdbcType=TINYINT},
       message_type = #{messageType,jdbcType=TINYINT},
       send_time = #{sendTime,jdbcType=TIMESTAMP},
+      device_type = #{deviceType,jdbcType=TINYINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       version = #{version,jdbcType=INTEGER}
