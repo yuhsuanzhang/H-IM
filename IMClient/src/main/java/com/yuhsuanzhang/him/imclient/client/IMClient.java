@@ -1,7 +1,7 @@
 package com.yuhsuanzhang.him.imclient.client;
 
 import com.yuhsuanzhang.him.imclient.handle.IMClientHandler;
-import com.yuhsuanzhang.him.imcommon.proto.IMMessageProto;
+import com.yuhsuanzhang.him.imcommon.entity.IMMessageProto;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -58,7 +58,7 @@ public class IMClient {
                 IMMessageProto.IMMessage imMessage = IMMessageProto
                         .IMMessage
                         .newBuilder()
-                        .setMessage(line)
+                        .setContent(line)
                         .build();
                 future.channel().writeAndFlush(imMessage);
             }

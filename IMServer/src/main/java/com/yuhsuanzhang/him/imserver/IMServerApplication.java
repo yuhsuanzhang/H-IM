@@ -4,6 +4,7 @@ import com.yuhsuanzhang.him.imserver.config.ZookeeperRegistry;
 import com.yuhsuanzhang.him.imserver.config.ZookeeperRegistryConfig;
 import com.yuhsuanzhang.him.imserver.server.IMServer;
 import lombok.extern.slf4j.Slf4j;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -25,6 +26,7 @@ import javax.annotation.PreDestroy;
 @EnableAsync
 @EnableKafka
 @EnableConfigurationProperties(ZookeeperRegistryConfig.class)
+@MapperScan({"com.yuhsuanzhang.him.imserver.mapper"})
 @Slf4j
 public class IMServerApplication implements CommandLineRunner {
 

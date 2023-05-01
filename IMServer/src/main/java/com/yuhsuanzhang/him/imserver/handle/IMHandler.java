@@ -1,19 +1,16 @@
 package com.yuhsuanzhang.him.imserver.handle;
 
-import com.yuhsuanzhang.him.imcommon.proto.IMMessageProto;
+import com.yuhsuanzhang.him.imcommon.entity.IMMessageProto;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 //import org.redisson.api.RMap;
 //import org.redisson.api.RedissonClient;
-import io.netty.util.AttributeKey;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +31,7 @@ public class IMHandler extends SimpleChannelInboundHandler<IMMessageProto.IMMess
     @Value("${im.server.id:zyx}")
     private String serverId;
 
-    Map<String,ChannelHandlerContext> clients = new ConcurrentHashMap<>();
+    private final Map<String,ChannelHandlerContext> clients = new ConcurrentHashMap<>();
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -58,7 +55,7 @@ public class IMHandler extends SimpleChannelInboundHandler<IMMessageProto.IMMess
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, IMMessageProto.IMMessage mes) throws Exception {
         //RMap<String, ChannelHandlerContext> clients = redissonClient.getMap("clients");
-        String message = mes.getMessage();
+        String message = mes.getContent();
         RMap<String, List<String>> groups = redissonClient.getMap("groups");
         System.out.println("Received message [" + message + "]");
         String clientId = ctx.channel().id().asLongText();

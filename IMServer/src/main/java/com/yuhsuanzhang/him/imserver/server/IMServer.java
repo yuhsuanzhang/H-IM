@@ -42,8 +42,9 @@ public class IMServer {
 
     @Resource
     private ZookeeperRegistry zookeeperRegistry;
-    private final EventLoopGroup bossGroup = new NioEventLoopGroup();
-    private final EventLoopGroup workerGroup = new NioEventLoopGroup();
+
+    private final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+    private final EventLoopGroup workerGroup = new NioEventLoopGroup(5);
 
     public void run() throws Exception {
         try {
@@ -71,6 +72,7 @@ public class IMServer {
 
             future.channel().closeFuture().sync();
         } finally {
+            this.shutdown();
         }
     }
 

@@ -1,0 +1,1391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuhsuanzhang.him.imserver.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="com.yuhsuanzhang.him.imcommon.entity.User">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="family_name" jdbcType="VARCHAR" property="familyName" />
+    <result column="given_name" jdbcType="VARCHAR" property="givenName" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="sex" jdbcType="BIT" property="sex" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="group_id" jdbcType="INTEGER" property="groupId" />
+    <result column="sub_id" jdbcType="INTEGER" property="subId" />
+    <result column="dep_id" jdbcType="INTEGER" property="depId" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="property" jdbcType="BIT" property="property" />
+    <result column="language" jdbcType="BIT" property="language" />
+    <result column="leaders" jdbcType="VARCHAR" property="leaders" />
+    <result column="wx_account" jdbcType="VARCHAR" property="wxAccount" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, name, family_name, given_name, code, sex, email, group_id, sub_id, dep_id, status, 
+    property, language, leaders, wx_account
+  </sql>
+  <select id="selectByExample" parameterType="com.yuhsuanzhang.him.imcommon.entity.UserExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.yuhsuanzhang.him.imcommon.entity.UserExample">
+    delete from user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yuhsuanzhang.him.imcommon.entity.User">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into user (name, family_name, given_name, 
+      code, sex, email, group_id, 
+      sub_id, dep_id, status, property, 
+      language, leaders, wx_account
+      )
+    values (#{name,jdbcType=VARCHAR}, #{familyName,jdbcType=VARCHAR}, #{givenName,jdbcType=VARCHAR}, 
+      #{code,jdbcType=VARCHAR}, #{sex,jdbcType=BIT}, #{email,jdbcType=VARCHAR}, #{groupId,jdbcType=INTEGER}, 
+      #{subId,jdbcType=INTEGER}, #{depId,jdbcType=INTEGER}, #{status,jdbcType=BIT}, #{property,jdbcType=BIT}, 
+      #{language,jdbcType=BIT}, #{leaders,jdbcType=VARCHAR}, #{wxAccount,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.yuhsuanzhang.him.imcommon.entity.User">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        name,
+      </if>
+      <if test="familyName != null">
+        family_name,
+      </if>
+      <if test="givenName != null">
+        given_name,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="groupId != null">
+        group_id,
+      </if>
+      <if test="subId != null">
+        sub_id,
+      </if>
+      <if test="depId != null">
+        dep_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="property != null">
+        property,
+      </if>
+      <if test="language != null">
+        language,
+      </if>
+      <if test="leaders != null">
+        leaders,
+      </if>
+      <if test="wxAccount != null">
+        wx_account,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="familyName != null">
+        #{familyName,jdbcType=VARCHAR},
+      </if>
+      <if test="givenName != null">
+        #{givenName,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=BIT},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="groupId != null">
+        #{groupId,jdbcType=INTEGER},
+      </if>
+      <if test="subId != null">
+        #{subId,jdbcType=INTEGER},
+      </if>
+      <if test="depId != null">
+        #{depId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="property != null">
+        #{property,jdbcType=BIT},
+      </if>
+      <if test="language != null">
+        #{language,jdbcType=BIT},
+      </if>
+      <if test="leaders != null">
+        #{leaders,jdbcType=VARCHAR},
+      </if>
+      <if test="wxAccount != null">
+        #{wxAccount,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yuhsuanzhang.him.imcommon.entity.UserExample" resultType="java.lang.Long">
+    select count(*) from user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update user
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.name != null">
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.familyName != null">
+        family_name = #{record.familyName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.givenName != null">
+        given_name = #{record.givenName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.code != null">
+        code = #{record.code,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sex != null">
+        sex = #{record.sex,jdbcType=BIT},
+      </if>
+      <if test="record.email != null">
+        email = #{record.email,jdbcType=VARCHAR},
+      </if>
+      <if test="record.groupId != null">
+        group_id = #{record.groupId,jdbcType=INTEGER},
+      </if>
+      <if test="record.subId != null">
+        sub_id = #{record.subId,jdbcType=INTEGER},
+      </if>
+      <if test="record.depId != null">
+        dep_id = #{record.depId,jdbcType=INTEGER},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=BIT},
+      </if>
+      <if test="record.property != null">
+        property = #{record.property,jdbcType=BIT},
+      </if>
+      <if test="record.language != null">
+        language = #{record.language,jdbcType=BIT},
+      </if>
+      <if test="record.leaders != null">
+        leaders = #{record.leaders,jdbcType=VARCHAR},
+      </if>
+      <if test="record.wxAccount != null">
+        wx_account = #{record.wxAccount,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update user
+    set id = #{record.id,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      family_name = #{record.familyName,jdbcType=VARCHAR},
+      given_name = #{record.givenName,jdbcType=VARCHAR},
+      code = #{record.code,jdbcType=VARCHAR},
+      sex = #{record.sex,jdbcType=BIT},
+      email = #{record.email,jdbcType=VARCHAR},
+      group_id = #{record.groupId,jdbcType=INTEGER},
+      sub_id = #{record.subId,jdbcType=INTEGER},
+      dep_id = #{record.depId,jdbcType=INTEGER},
+      status = #{record.status,jdbcType=BIT},
+      property = #{record.property,jdbcType=BIT},
+      language = #{record.language,jdbcType=BIT},
+      leaders = #{record.leaders,jdbcType=VARCHAR},
+      wx_account = #{record.wxAccount,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yuhsuanzhang.him.imcommon.entity.User">
+    update user
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="familyName != null">
+        family_name = #{familyName,jdbcType=VARCHAR},
+      </if>
+      <if test="givenName != null">
+        given_name = #{givenName,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=BIT},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="groupId != null">
+        group_id = #{groupId,jdbcType=INTEGER},
+      </if>
+      <if test="subId != null">
+        sub_id = #{subId,jdbcType=INTEGER},
+      </if>
+      <if test="depId != null">
+        dep_id = #{depId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="property != null">
+        property = #{property,jdbcType=BIT},
+      </if>
+      <if test="language != null">
+        language = #{language,jdbcType=BIT},
+      </if>
+      <if test="leaders != null">
+        leaders = #{leaders,jdbcType=VARCHAR},
+      </if>
+      <if test="wxAccount != null">
+        wx_account = #{wxAccount,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yuhsuanzhang.him.imcommon.entity.User">
+    update user
+    set name = #{name,jdbcType=VARCHAR},
+      family_name = #{familyName,jdbcType=VARCHAR},
+      given_name = #{givenName,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=BIT},
+      email = #{email,jdbcType=VARCHAR},
+      group_id = #{groupId,jdbcType=INTEGER},
+      sub_id = #{subId,jdbcType=INTEGER},
+      dep_id = #{depId,jdbcType=INTEGER},
+      status = #{status,jdbcType=BIT},
+      property = #{property,jdbcType=BIT},
+      language = #{language,jdbcType=BIT},
+      leaders = #{leaders,jdbcType=VARCHAR},
+      wx_account = #{wxAccount,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <resultMap id="BaseResultMap" type="com.yuhsuanzhang.him.imcommon.entity.User">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="version" jdbcType="BIGINT" property="version" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, account, password, phone, email, nickname, avatar, create_time, update_time, 
+    version
+  </sql>
+  <select id="selectByExample" parameterType="com.yuhsuanzhang.him.imcommon.entity.UserExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from user
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.yuhsuanzhang.him.imcommon.entity.UserExample">
+    delete from user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yuhsuanzhang.him.imcommon.entity.User">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into user (account, password, phone, 
+      email, nickname, avatar, 
+      create_time, update_time, version
+      )
+    values (#{account,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{version,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.yuhsuanzhang.him.imcommon.entity.User">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="account != null">
+        account,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="nickname != null">
+        nickname,
+      </if>
+      <if test="avatar != null">
+        avatar,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="version != null">
+        version,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="account != null">
+        #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null">
+        #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="avatar != null">
+        #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yuhsuanzhang.him.imcommon.entity.UserExample" resultType="java.lang.Long">
+    select count(*) from user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update user
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.account != null">
+        account = #{record.account,jdbcType=VARCHAR},
+      </if>
+      <if test="record.password != null">
+        password = #{record.password,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phone != null">
+        phone = #{record.phone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.email != null">
+        email = #{record.email,jdbcType=VARCHAR},
+      </if>
+      <if test="record.nickname != null">
+        nickname = #{record.nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.avatar != null">
+        avatar = #{record.avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.version != null">
+        version = #{record.version,jdbcType=BIGINT},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update user
+    set id = #{record.id,jdbcType=BIGINT},
+      account = #{record.account,jdbcType=VARCHAR},
+      password = #{record.password,jdbcType=VARCHAR},
+      phone = #{record.phone,jdbcType=VARCHAR},
+      email = #{record.email,jdbcType=VARCHAR},
+      nickname = #{record.nickname,jdbcType=VARCHAR},
+      avatar = #{record.avatar,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      version = #{record.version,jdbcType=BIGINT}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yuhsuanzhang.him.imcommon.entity.User">
+    update user
+    <set>
+      <if test="account != null">
+        account = #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null">
+        nickname = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="avatar != null">
+        avatar = #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null">
+        version = #{version,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yuhsuanzhang.him.imcommon.entity.User">
+    update user
+    set account = #{account,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      nickname = #{nickname,jdbcType=VARCHAR},
+      avatar = #{avatar,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      version = #{version,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <resultMap id="BaseResultMap" type="com.yuhsuanzhang.him.imcommon.entity.User">
+    <result column="Host" jdbcType="CHAR" property="host" />
+    <result column="User" jdbcType="CHAR" property="user" />
+    <result column="Select_priv" jdbcType="VARCHAR" property="selectPriv" />
+    <result column="Insert_priv" jdbcType="VARCHAR" property="insertPriv" />
+    <result column="Update_priv" jdbcType="VARCHAR" property="updatePriv" />
+    <result column="Delete_priv" jdbcType="VARCHAR" property="deletePriv" />
+    <result column="Create_priv" jdbcType="VARCHAR" property="createPriv" />
+    <result column="Drop_priv" jdbcType="VARCHAR" property="dropPriv" />
+    <result column="Reload_priv" jdbcType="VARCHAR" property="reloadPriv" />
+    <result column="Shutdown_priv" jdbcType="VARCHAR" property="shutdownPriv" />
+    <result column="Process_priv" jdbcType="VARCHAR" property="processPriv" />
+    <result column="File_priv" jdbcType="VARCHAR" property="filePriv" />
+    <result column="Grant_priv" jdbcType="VARCHAR" property="grantPriv" />
+    <result column="References_priv" jdbcType="VARCHAR" property="referencesPriv" />
+    <result column="Index_priv" jdbcType="VARCHAR" property="indexPriv" />
+    <result column="Alter_priv" jdbcType="VARCHAR" property="alterPriv" />
+    <result column="Show_db_priv" jdbcType="VARCHAR" property="showDbPriv" />
+    <result column="Super_priv" jdbcType="VARCHAR" property="superPriv" />
+    <result column="Create_tmp_table_priv" jdbcType="VARCHAR" property="createTmpTablePriv" />
+    <result column="Lock_tables_priv" jdbcType="VARCHAR" property="lockTablesPriv" />
+    <result column="Execute_priv" jdbcType="VARCHAR" property="executePriv" />
+    <result column="Repl_slave_priv" jdbcType="VARCHAR" property="replSlavePriv" />
+    <result column="Repl_client_priv" jdbcType="VARCHAR" property="replClientPriv" />
+    <result column="Create_view_priv" jdbcType="VARCHAR" property="createViewPriv" />
+    <result column="Show_view_priv" jdbcType="VARCHAR" property="showViewPriv" />
+    <result column="Create_routine_priv" jdbcType="VARCHAR" property="createRoutinePriv" />
+    <result column="Alter_routine_priv" jdbcType="VARCHAR" property="alterRoutinePriv" />
+    <result column="Create_user_priv" jdbcType="VARCHAR" property="createUserPriv" />
+    <result column="Event_priv" jdbcType="VARCHAR" property="eventPriv" />
+    <result column="Trigger_priv" jdbcType="VARCHAR" property="triggerPriv" />
+    <result column="Create_tablespace_priv" jdbcType="VARCHAR" property="createTablespacePriv" />
+    <result column="Delete_history_priv" jdbcType="VARCHAR" property="deleteHistoryPriv" />
+    <result column="ssl_type" jdbcType="VARCHAR" property="sslType" />
+    <result column="max_questions" jdbcType="BIGINT" property="maxQuestions" />
+    <result column="max_updates" jdbcType="BIGINT" property="maxUpdates" />
+    <result column="max_connections" jdbcType="BIGINT" property="maxConnections" />
+    <result column="max_user_connections" jdbcType="BIGINT" property="maxUserConnections" />
+    <result column="password_expired" jdbcType="VARCHAR" property="passwordExpired" />
+    <result column="is_role" jdbcType="VARCHAR" property="isRole" />
+    <result column="max_statement_time" jdbcType="DECIMAL" property="maxStatementTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yuhsuanzhang.him.imcommon.entity.UserWithBLOBs">
+    <result column="Password" jdbcType="LONGVARCHAR" property="password" />
+    <result column="ssl_cipher" jdbcType="LONGVARCHAR" property="sslCipher" />
+    <result column="x509_issuer" jdbcType="LONGVARCHAR" property="x509Issuer" />
+    <result column="x509_subject" jdbcType="LONGVARCHAR" property="x509Subject" />
+    <result column="plugin" jdbcType="LONGVARCHAR" property="plugin" />
+    <result column="authentication_string" jdbcType="LONGVARCHAR" property="authenticationString" />
+    <result column="default_role" jdbcType="LONGVARCHAR" property="defaultRole" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    Host, User, Select_priv, Insert_priv, Update_priv, Delete_priv, Create_priv, Drop_priv, 
+    Reload_priv, Shutdown_priv, Process_priv, File_priv, Grant_priv, References_priv, 
+    Index_priv, Alter_priv, Show_db_priv, Super_priv, Create_tmp_table_priv, Lock_tables_priv, 
+    Execute_priv, Repl_slave_priv, Repl_client_priv, Create_view_priv, Show_view_priv, 
+    Create_routine_priv, Alter_routine_priv, Create_user_priv, Event_priv, Trigger_priv, 
+    Create_tablespace_priv, Delete_history_priv, ssl_type, max_questions, max_updates, 
+    max_connections, max_user_connections, password_expired, is_role, max_statement_time
+  </sql>
+  <sql id="Blob_Column_List">
+    Password, ssl_cipher, x509_issuer, x509_subject, plugin, authentication_string, default_role
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.yuhsuanzhang.him.imcommon.entity.UserExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.yuhsuanzhang.him.imcommon.entity.UserExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.yuhsuanzhang.him.imcommon.entity.UserExample">
+    delete from user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yuhsuanzhang.him.imcommon.entity.UserWithBLOBs">
+    insert into user (Host, User, Select_priv, 
+      Insert_priv, Update_priv, Delete_priv, 
+      Create_priv, Drop_priv, Reload_priv, 
+      Shutdown_priv, Process_priv, File_priv, 
+      Grant_priv, References_priv, Index_priv, 
+      Alter_priv, Show_db_priv, Super_priv, 
+      Create_tmp_table_priv, Lock_tables_priv, Execute_priv, 
+      Repl_slave_priv, Repl_client_priv, Create_view_priv, 
+      Show_view_priv, Create_routine_priv, Alter_routine_priv, 
+      Create_user_priv, Event_priv, Trigger_priv, 
+      Create_tablespace_priv, Delete_history_priv, 
+      ssl_type, max_questions, max_updates, 
+      max_connections, max_user_connections, password_expired, 
+      is_role, max_statement_time, Password, 
+      ssl_cipher, x509_issuer, x509_subject, 
+      plugin, authentication_string, default_role
+      )
+    values (#{host,jdbcType=CHAR}, #{user,jdbcType=CHAR}, #{selectPriv,jdbcType=VARCHAR}, 
+      #{insertPriv,jdbcType=VARCHAR}, #{updatePriv,jdbcType=VARCHAR}, #{deletePriv,jdbcType=VARCHAR}, 
+      #{createPriv,jdbcType=VARCHAR}, #{dropPriv,jdbcType=VARCHAR}, #{reloadPriv,jdbcType=VARCHAR}, 
+      #{shutdownPriv,jdbcType=VARCHAR}, #{processPriv,jdbcType=VARCHAR}, #{filePriv,jdbcType=VARCHAR}, 
+      #{grantPriv,jdbcType=VARCHAR}, #{referencesPriv,jdbcType=VARCHAR}, #{indexPriv,jdbcType=VARCHAR}, 
+      #{alterPriv,jdbcType=VARCHAR}, #{showDbPriv,jdbcType=VARCHAR}, #{superPriv,jdbcType=VARCHAR}, 
+      #{createTmpTablePriv,jdbcType=VARCHAR}, #{lockTablesPriv,jdbcType=VARCHAR}, #{executePriv,jdbcType=VARCHAR}, 
+      #{replSlavePriv,jdbcType=VARCHAR}, #{replClientPriv,jdbcType=VARCHAR}, #{createViewPriv,jdbcType=VARCHAR}, 
+      #{showViewPriv,jdbcType=VARCHAR}, #{createRoutinePriv,jdbcType=VARCHAR}, #{alterRoutinePriv,jdbcType=VARCHAR}, 
+      #{createUserPriv,jdbcType=VARCHAR}, #{eventPriv,jdbcType=VARCHAR}, #{triggerPriv,jdbcType=VARCHAR}, 
+      #{createTablespacePriv,jdbcType=VARCHAR}, #{deleteHistoryPriv,jdbcType=VARCHAR}, 
+      #{sslType,jdbcType=VARCHAR}, #{maxQuestions,jdbcType=BIGINT}, #{maxUpdates,jdbcType=BIGINT}, 
+      #{maxConnections,jdbcType=BIGINT}, #{maxUserConnections,jdbcType=BIGINT}, #{passwordExpired,jdbcType=VARCHAR}, 
+      #{isRole,jdbcType=VARCHAR}, #{maxStatementTime,jdbcType=DECIMAL}, #{password,jdbcType=LONGVARCHAR}, 
+      #{sslCipher,jdbcType=LONGVARCHAR}, #{x509Issuer,jdbcType=LONGVARCHAR}, #{x509Subject,jdbcType=LONGVARCHAR}, 
+      #{plugin,jdbcType=LONGVARCHAR}, #{authenticationString,jdbcType=LONGVARCHAR}, #{defaultRole,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.yuhsuanzhang.him.imcommon.entity.UserWithBLOBs">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="host != null">
+        Host,
+      </if>
+      <if test="user != null">
+        User,
+      </if>
+      <if test="selectPriv != null">
+        Select_priv,
+      </if>
+      <if test="insertPriv != null">
+        Insert_priv,
+      </if>
+      <if test="updatePriv != null">
+        Update_priv,
+      </if>
+      <if test="deletePriv != null">
+        Delete_priv,
+      </if>
+      <if test="createPriv != null">
+        Create_priv,
+      </if>
+      <if test="dropPriv != null">
+        Drop_priv,
+      </if>
+      <if test="reloadPriv != null">
+        Reload_priv,
+      </if>
+      <if test="shutdownPriv != null">
+        Shutdown_priv,
+      </if>
+      <if test="processPriv != null">
+        Process_priv,
+      </if>
+      <if test="filePriv != null">
+        File_priv,
+      </if>
+      <if test="grantPriv != null">
+        Grant_priv,
+      </if>
+      <if test="referencesPriv != null">
+        References_priv,
+      </if>
+      <if test="indexPriv != null">
+        Index_priv,
+      </if>
+      <if test="alterPriv != null">
+        Alter_priv,
+      </if>
+      <if test="showDbPriv != null">
+        Show_db_priv,
+      </if>
+      <if test="superPriv != null">
+        Super_priv,
+      </if>
+      <if test="createTmpTablePriv != null">
+        Create_tmp_table_priv,
+      </if>
+      <if test="lockTablesPriv != null">
+        Lock_tables_priv,
+      </if>
+      <if test="executePriv != null">
+        Execute_priv,
+      </if>
+      <if test="replSlavePriv != null">
+        Repl_slave_priv,
+      </if>
+      <if test="replClientPriv != null">
+        Repl_client_priv,
+      </if>
+      <if test="createViewPriv != null">
+        Create_view_priv,
+      </if>
+      <if test="showViewPriv != null">
+        Show_view_priv,
+      </if>
+      <if test="createRoutinePriv != null">
+        Create_routine_priv,
+      </if>
+      <if test="alterRoutinePriv != null">
+        Alter_routine_priv,
+      </if>
+      <if test="createUserPriv != null">
+        Create_user_priv,
+      </if>
+      <if test="eventPriv != null">
+        Event_priv,
+      </if>
+      <if test="triggerPriv != null">
+        Trigger_priv,
+      </if>
+      <if test="createTablespacePriv != null">
+        Create_tablespace_priv,
+      </if>
+      <if test="deleteHistoryPriv != null">
+        Delete_history_priv,
+      </if>
+      <if test="sslType != null">
+        ssl_type,
+      </if>
+      <if test="maxQuestions != null">
+        max_questions,
+      </if>
+      <if test="maxUpdates != null">
+        max_updates,
+      </if>
+      <if test="maxConnections != null">
+        max_connections,
+      </if>
+      <if test="maxUserConnections != null">
+        max_user_connections,
+      </if>
+      <if test="passwordExpired != null">
+        password_expired,
+      </if>
+      <if test="isRole != null">
+        is_role,
+      </if>
+      <if test="maxStatementTime != null">
+        max_statement_time,
+      </if>
+      <if test="password != null">
+        Password,
+      </if>
+      <if test="sslCipher != null">
+        ssl_cipher,
+      </if>
+      <if test="x509Issuer != null">
+        x509_issuer,
+      </if>
+      <if test="x509Subject != null">
+        x509_subject,
+      </if>
+      <if test="plugin != null">
+        plugin,
+      </if>
+      <if test="authenticationString != null">
+        authentication_string,
+      </if>
+      <if test="defaultRole != null">
+        default_role,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="host != null">
+        #{host,jdbcType=CHAR},
+      </if>
+      <if test="user != null">
+        #{user,jdbcType=CHAR},
+      </if>
+      <if test="selectPriv != null">
+        #{selectPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="insertPriv != null">
+        #{insertPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="updatePriv != null">
+        #{updatePriv,jdbcType=VARCHAR},
+      </if>
+      <if test="deletePriv != null">
+        #{deletePriv,jdbcType=VARCHAR},
+      </if>
+      <if test="createPriv != null">
+        #{createPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="dropPriv != null">
+        #{dropPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="reloadPriv != null">
+        #{reloadPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="shutdownPriv != null">
+        #{shutdownPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="processPriv != null">
+        #{processPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="filePriv != null">
+        #{filePriv,jdbcType=VARCHAR},
+      </if>
+      <if test="grantPriv != null">
+        #{grantPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="referencesPriv != null">
+        #{referencesPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="indexPriv != null">
+        #{indexPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="alterPriv != null">
+        #{alterPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="showDbPriv != null">
+        #{showDbPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="superPriv != null">
+        #{superPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="createTmpTablePriv != null">
+        #{createTmpTablePriv,jdbcType=VARCHAR},
+      </if>
+      <if test="lockTablesPriv != null">
+        #{lockTablesPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="executePriv != null">
+        #{executePriv,jdbcType=VARCHAR},
+      </if>
+      <if test="replSlavePriv != null">
+        #{replSlavePriv,jdbcType=VARCHAR},
+      </if>
+      <if test="replClientPriv != null">
+        #{replClientPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="createViewPriv != null">
+        #{createViewPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="showViewPriv != null">
+        #{showViewPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="createRoutinePriv != null">
+        #{createRoutinePriv,jdbcType=VARCHAR},
+      </if>
+      <if test="alterRoutinePriv != null">
+        #{alterRoutinePriv,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserPriv != null">
+        #{createUserPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="eventPriv != null">
+        #{eventPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="triggerPriv != null">
+        #{triggerPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="createTablespacePriv != null">
+        #{createTablespacePriv,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteHistoryPriv != null">
+        #{deleteHistoryPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="sslType != null">
+        #{sslType,jdbcType=VARCHAR},
+      </if>
+      <if test="maxQuestions != null">
+        #{maxQuestions,jdbcType=BIGINT},
+      </if>
+      <if test="maxUpdates != null">
+        #{maxUpdates,jdbcType=BIGINT},
+      </if>
+      <if test="maxConnections != null">
+        #{maxConnections,jdbcType=BIGINT},
+      </if>
+      <if test="maxUserConnections != null">
+        #{maxUserConnections,jdbcType=BIGINT},
+      </if>
+      <if test="passwordExpired != null">
+        #{passwordExpired,jdbcType=VARCHAR},
+      </if>
+      <if test="isRole != null">
+        #{isRole,jdbcType=VARCHAR},
+      </if>
+      <if test="maxStatementTime != null">
+        #{maxStatementTime,jdbcType=DECIMAL},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="sslCipher != null">
+        #{sslCipher,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="x509Issuer != null">
+        #{x509Issuer,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="x509Subject != null">
+        #{x509Subject,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="plugin != null">
+        #{plugin,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="authenticationString != null">
+        #{authenticationString,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="defaultRole != null">
+        #{defaultRole,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yuhsuanzhang.him.imcommon.entity.UserExample" resultType="java.lang.Long">
+    select count(*) from user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update user
+    <set>
+      <if test="record.host != null">
+        Host = #{record.host,jdbcType=CHAR},
+      </if>
+      <if test="record.user != null">
+        User = #{record.user,jdbcType=CHAR},
+      </if>
+      <if test="record.selectPriv != null">
+        Select_priv = #{record.selectPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.insertPriv != null">
+        Insert_priv = #{record.insertPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updatePriv != null">
+        Update_priv = #{record.updatePriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deletePriv != null">
+        Delete_priv = #{record.deletePriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createPriv != null">
+        Create_priv = #{record.createPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dropPriv != null">
+        Drop_priv = #{record.dropPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reloadPriv != null">
+        Reload_priv = #{record.reloadPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.shutdownPriv != null">
+        Shutdown_priv = #{record.shutdownPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.processPriv != null">
+        Process_priv = #{record.processPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.filePriv != null">
+        File_priv = #{record.filePriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.grantPriv != null">
+        Grant_priv = #{record.grantPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.referencesPriv != null">
+        References_priv = #{record.referencesPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.indexPriv != null">
+        Index_priv = #{record.indexPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.alterPriv != null">
+        Alter_priv = #{record.alterPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.showDbPriv != null">
+        Show_db_priv = #{record.showDbPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.superPriv != null">
+        Super_priv = #{record.superPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTmpTablePriv != null">
+        Create_tmp_table_priv = #{record.createTmpTablePriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lockTablesPriv != null">
+        Lock_tables_priv = #{record.lockTablesPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.executePriv != null">
+        Execute_priv = #{record.executePriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.replSlavePriv != null">
+        Repl_slave_priv = #{record.replSlavePriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.replClientPriv != null">
+        Repl_client_priv = #{record.replClientPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createViewPriv != null">
+        Create_view_priv = #{record.createViewPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.showViewPriv != null">
+        Show_view_priv = #{record.showViewPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createRoutinePriv != null">
+        Create_routine_priv = #{record.createRoutinePriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.alterRoutinePriv != null">
+        Alter_routine_priv = #{record.alterRoutinePriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUserPriv != null">
+        Create_user_priv = #{record.createUserPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.eventPriv != null">
+        Event_priv = #{record.eventPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.triggerPriv != null">
+        Trigger_priv = #{record.triggerPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTablespacePriv != null">
+        Create_tablespace_priv = #{record.createTablespacePriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deleteHistoryPriv != null">
+        Delete_history_priv = #{record.deleteHistoryPriv,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sslType != null">
+        ssl_type = #{record.sslType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.maxQuestions != null">
+        max_questions = #{record.maxQuestions,jdbcType=BIGINT},
+      </if>
+      <if test="record.maxUpdates != null">
+        max_updates = #{record.maxUpdates,jdbcType=BIGINT},
+      </if>
+      <if test="record.maxConnections != null">
+        max_connections = #{record.maxConnections,jdbcType=BIGINT},
+      </if>
+      <if test="record.maxUserConnections != null">
+        max_user_connections = #{record.maxUserConnections,jdbcType=BIGINT},
+      </if>
+      <if test="record.passwordExpired != null">
+        password_expired = #{record.passwordExpired,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isRole != null">
+        is_role = #{record.isRole,jdbcType=VARCHAR},
+      </if>
+      <if test="record.maxStatementTime != null">
+        max_statement_time = #{record.maxStatementTime,jdbcType=DECIMAL},
+      </if>
+      <if test="record.password != null">
+        Password = #{record.password,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.sslCipher != null">
+        ssl_cipher = #{record.sslCipher,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.x509Issuer != null">
+        x509_issuer = #{record.x509Issuer,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.x509Subject != null">
+        x509_subject = #{record.x509Subject,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.plugin != null">
+        plugin = #{record.plugin,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.authenticationString != null">
+        authentication_string = #{record.authenticationString,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.defaultRole != null">
+        default_role = #{record.defaultRole,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update user
+    set Host = #{record.host,jdbcType=CHAR},
+      User = #{record.user,jdbcType=CHAR},
+      Select_priv = #{record.selectPriv,jdbcType=VARCHAR},
+      Insert_priv = #{record.insertPriv,jdbcType=VARCHAR},
+      Update_priv = #{record.updatePriv,jdbcType=VARCHAR},
+      Delete_priv = #{record.deletePriv,jdbcType=VARCHAR},
+      Create_priv = #{record.createPriv,jdbcType=VARCHAR},
+      Drop_priv = #{record.dropPriv,jdbcType=VARCHAR},
+      Reload_priv = #{record.reloadPriv,jdbcType=VARCHAR},
+      Shutdown_priv = #{record.shutdownPriv,jdbcType=VARCHAR},
+      Process_priv = #{record.processPriv,jdbcType=VARCHAR},
+      File_priv = #{record.filePriv,jdbcType=VARCHAR},
+      Grant_priv = #{record.grantPriv,jdbcType=VARCHAR},
+      References_priv = #{record.referencesPriv,jdbcType=VARCHAR},
+      Index_priv = #{record.indexPriv,jdbcType=VARCHAR},
+      Alter_priv = #{record.alterPriv,jdbcType=VARCHAR},
+      Show_db_priv = #{record.showDbPriv,jdbcType=VARCHAR},
+      Super_priv = #{record.superPriv,jdbcType=VARCHAR},
+      Create_tmp_table_priv = #{record.createTmpTablePriv,jdbcType=VARCHAR},
+      Lock_tables_priv = #{record.lockTablesPriv,jdbcType=VARCHAR},
+      Execute_priv = #{record.executePriv,jdbcType=VARCHAR},
+      Repl_slave_priv = #{record.replSlavePriv,jdbcType=VARCHAR},
+      Repl_client_priv = #{record.replClientPriv,jdbcType=VARCHAR},
+      Create_view_priv = #{record.createViewPriv,jdbcType=VARCHAR},
+      Show_view_priv = #{record.showViewPriv,jdbcType=VARCHAR},
+      Create_routine_priv = #{record.createRoutinePriv,jdbcType=VARCHAR},
+      Alter_routine_priv = #{record.alterRoutinePriv,jdbcType=VARCHAR},
+      Create_user_priv = #{record.createUserPriv,jdbcType=VARCHAR},
+      Event_priv = #{record.eventPriv,jdbcType=VARCHAR},
+      Trigger_priv = #{record.triggerPriv,jdbcType=VARCHAR},
+      Create_tablespace_priv = #{record.createTablespacePriv,jdbcType=VARCHAR},
+      Delete_history_priv = #{record.deleteHistoryPriv,jdbcType=VARCHAR},
+      ssl_type = #{record.sslType,jdbcType=VARCHAR},
+      max_questions = #{record.maxQuestions,jdbcType=BIGINT},
+      max_updates = #{record.maxUpdates,jdbcType=BIGINT},
+      max_connections = #{record.maxConnections,jdbcType=BIGINT},
+      max_user_connections = #{record.maxUserConnections,jdbcType=BIGINT},
+      password_expired = #{record.passwordExpired,jdbcType=VARCHAR},
+      is_role = #{record.isRole,jdbcType=VARCHAR},
+      max_statement_time = #{record.maxStatementTime,jdbcType=DECIMAL},
+      Password = #{record.password,jdbcType=LONGVARCHAR},
+      ssl_cipher = #{record.sslCipher,jdbcType=LONGVARCHAR},
+      x509_issuer = #{record.x509Issuer,jdbcType=LONGVARCHAR},
+      x509_subject = #{record.x509Subject,jdbcType=LONGVARCHAR},
+      plugin = #{record.plugin,jdbcType=LONGVARCHAR},
+      authentication_string = #{record.authenticationString,jdbcType=LONGVARCHAR},
+      default_role = #{record.defaultRole,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update user
+    set Host = #{record.host,jdbcType=CHAR},
+      User = #{record.user,jdbcType=CHAR},
+      Select_priv = #{record.selectPriv,jdbcType=VARCHAR},
+      Insert_priv = #{record.insertPriv,jdbcType=VARCHAR},
+      Update_priv = #{record.updatePriv,jdbcType=VARCHAR},
+      Delete_priv = #{record.deletePriv,jdbcType=VARCHAR},
+      Create_priv = #{record.createPriv,jdbcType=VARCHAR},
+      Drop_priv = #{record.dropPriv,jdbcType=VARCHAR},
+      Reload_priv = #{record.reloadPriv,jdbcType=VARCHAR},
+      Shutdown_priv = #{record.shutdownPriv,jdbcType=VARCHAR},
+      Process_priv = #{record.processPriv,jdbcType=VARCHAR},
+      File_priv = #{record.filePriv,jdbcType=VARCHAR},
+      Grant_priv = #{record.grantPriv,jdbcType=VARCHAR},
+      References_priv = #{record.referencesPriv,jdbcType=VARCHAR},
+      Index_priv = #{record.indexPriv,jdbcType=VARCHAR},
+      Alter_priv = #{record.alterPriv,jdbcType=VARCHAR},
+      Show_db_priv = #{record.showDbPriv,jdbcType=VARCHAR},
+      Super_priv = #{record.superPriv,jdbcType=VARCHAR},
+      Create_tmp_table_priv = #{record.createTmpTablePriv,jdbcType=VARCHAR},
+      Lock_tables_priv = #{record.lockTablesPriv,jdbcType=VARCHAR},
+      Execute_priv = #{record.executePriv,jdbcType=VARCHAR},
+      Repl_slave_priv = #{record.replSlavePriv,jdbcType=VARCHAR},
+      Repl_client_priv = #{record.replClientPriv,jdbcType=VARCHAR},
+      Create_view_priv = #{record.createViewPriv,jdbcType=VARCHAR},
+      Show_view_priv = #{record.showViewPriv,jdbcType=VARCHAR},
+      Create_routine_priv = #{record.createRoutinePriv,jdbcType=VARCHAR},
+      Alter_routine_priv = #{record.alterRoutinePriv,jdbcType=VARCHAR},
+      Create_user_priv = #{record.createUserPriv,jdbcType=VARCHAR},
+      Event_priv = #{record.eventPriv,jdbcType=VARCHAR},
+      Trigger_priv = #{record.triggerPriv,jdbcType=VARCHAR},
+      Create_tablespace_priv = #{record.createTablespacePriv,jdbcType=VARCHAR},
+      Delete_history_priv = #{record.deleteHistoryPriv,jdbcType=VARCHAR},
+      ssl_type = #{record.sslType,jdbcType=VARCHAR},
+      max_questions = #{record.maxQuestions,jdbcType=BIGINT},
+      max_updates = #{record.maxUpdates,jdbcType=BIGINT},
+      max_connections = #{record.maxConnections,jdbcType=BIGINT},
+      max_user_connections = #{record.maxUserConnections,jdbcType=BIGINT},
+      password_expired = #{record.passwordExpired,jdbcType=VARCHAR},
+      is_role = #{record.isRole,jdbcType=VARCHAR},
+      max_statement_time = #{record.maxStatementTime,jdbcType=DECIMAL}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

@@ -1,6 +1,6 @@
 package com.yuhsuanzhang.him.imclient.handle;
 
-import com.yuhsuanzhang.him.imcommon.proto.IMMessageProto;
+import com.yuhsuanzhang.him.imcommon.entity.IMMessageProto;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 

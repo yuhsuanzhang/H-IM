@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package com.yuhsuanzhang.him.imcommon.entity.proto;
+
+option java_package = "com.yuhsuanzhang.him.imcommon.entity.proto";
+option java_outer_classname = "IMMessageProto";
+
+import "google/protobuf/timestamp.proto";
+//生成命令
+//protoc --java_out=./ IMMessage.proto
+message IMMessage {
+  int64 id = 1; // 消息ID，使用自增主键或雪花算法生成
+  string content = 2; // 消息正文
+  int64 senderId = 3; // 发送者ID
+  int64 receiverId = 4; // 接收者ID
+  int64 previousMessageId = 5; // 上一条消息ID
+  int32 receiverType = 6; // 接收者类型
+  int32 messageType = 7; // 消息类型
+  google.protobuf.Timestamp sendTime = 8; // 发送时间
+  google.protobuf.Timestamp createTime = 9; // 创建时间
+  google.protobuf.Timestamp updateTime = 10; // 更新时间
+  int32 version = 11; // 版本号
+}
