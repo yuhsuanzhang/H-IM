@@ -1,17 +1,17 @@
-package com.yuhsuanzhang.him.imcommon.entity.example;
+package com.yuhsuanzhang.him.imcommon.entity;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class UserGroupExample {
+public class GroupExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public UserGroupExample() {
+    public GroupExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
@@ -165,123 +165,283 @@ public class UserGroupExample {
             return (Criteria) this;
         }
 
-        public Criteria andUserIdIsNull() {
-            addCriterion("user_id is null");
+        public Criteria andGroupNameIsNull() {
+            addCriterion("group_name is null");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdIsNotNull() {
-            addCriterion("user_id is not null");
+        public Criteria andGroupNameIsNotNull() {
+            addCriterion("group_name is not null");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdEqualTo(Long value) {
-            addCriterion("user_id =", value, "userId");
+        public Criteria andGroupNameEqualTo(String value) {
+            addCriterion("group_name =", value, "groupName");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdNotEqualTo(Long value) {
-            addCriterion("user_id <>", value, "userId");
+        public Criteria andGroupNameNotEqualTo(String value) {
+            addCriterion("group_name <>", value, "groupName");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdGreaterThan(Long value) {
-            addCriterion("user_id >", value, "userId");
+        public Criteria andGroupNameGreaterThan(String value) {
+            addCriterion("group_name >", value, "groupName");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("user_id >=", value, "userId");
+        public Criteria andGroupNameGreaterThanOrEqualTo(String value) {
+            addCriterion("group_name >=", value, "groupName");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdLessThan(Long value) {
-            addCriterion("user_id <", value, "userId");
+        public Criteria andGroupNameLessThan(String value) {
+            addCriterion("group_name <", value, "groupName");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdLessThanOrEqualTo(Long value) {
-            addCriterion("user_id <=", value, "userId");
+        public Criteria andGroupNameLessThanOrEqualTo(String value) {
+            addCriterion("group_name <=", value, "groupName");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdIn(List<Long> values) {
-            addCriterion("user_id in", values, "userId");
+        public Criteria andGroupNameLike(String value) {
+            addCriterion("group_name like", value, "groupName");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdNotIn(List<Long> values) {
-            addCriterion("user_id not in", values, "userId");
+        public Criteria andGroupNameNotLike(String value) {
+            addCriterion("group_name not like", value, "groupName");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdBetween(Long value1, Long value2) {
-            addCriterion("user_id between", value1, value2, "userId");
+        public Criteria andGroupNameIn(List<String> values) {
+            addCriterion("group_name in", values, "groupName");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdNotBetween(Long value1, Long value2) {
-            addCriterion("user_id not between", value1, value2, "userId");
+        public Criteria andGroupNameNotIn(List<String> values) {
+            addCriterion("group_name not in", values, "groupName");
             return (Criteria) this;
         }
 
-        public Criteria andGroupIdIsNull() {
-            addCriterion("group_id is null");
+        public Criteria andGroupNameBetween(String value1, String value2) {
+            addCriterion("group_name between", value1, value2, "groupName");
             return (Criteria) this;
         }
 
-        public Criteria andGroupIdIsNotNull() {
-            addCriterion("group_id is not null");
+        public Criteria andGroupNameNotBetween(String value1, String value2) {
+            addCriterion("group_name not between", value1, value2, "groupName");
             return (Criteria) this;
         }
 
-        public Criteria andGroupIdEqualTo(Long value) {
-            addCriterion("group_id =", value, "groupId");
+        public Criteria andGroupAvatarIsNull() {
+            addCriterion("group_avatar is null");
             return (Criteria) this;
         }
 
-        public Criteria andGroupIdNotEqualTo(Long value) {
-            addCriterion("group_id <>", value, "groupId");
+        public Criteria andGroupAvatarIsNotNull() {
+            addCriterion("group_avatar is not null");
             return (Criteria) this;
         }
 
-        public Criteria andGroupIdGreaterThan(Long value) {
-            addCriterion("group_id >", value, "groupId");
+        public Criteria andGroupAvatarEqualTo(String value) {
+            addCriterion("group_avatar =", value, "groupAvatar");
             return (Criteria) this;
         }
 
-        public Criteria andGroupIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("group_id >=", value, "groupId");
+        public Criteria andGroupAvatarNotEqualTo(String value) {
+            addCriterion("group_avatar <>", value, "groupAvatar");
             return (Criteria) this;
         }
 
-        public Criteria andGroupIdLessThan(Long value) {
-            addCriterion("group_id <", value, "groupId");
+        public Criteria andGroupAvatarGreaterThan(String value) {
+            addCriterion("group_avatar >", value, "groupAvatar");
             return (Criteria) this;
         }
 
-        public Criteria andGroupIdLessThanOrEqualTo(Long value) {
-            addCriterion("group_id <=", value, "groupId");
+        public Criteria andGroupAvatarGreaterThanOrEqualTo(String value) {
+            addCriterion("group_avatar >=", value, "groupAvatar");
             return (Criteria) this;
         }
 
-        public Criteria andGroupIdIn(List<Long> values) {
-            addCriterion("group_id in", values, "groupId");
+        public Criteria andGroupAvatarLessThan(String value) {
+            addCriterion("group_avatar <", value, "groupAvatar");
             return (Criteria) this;
         }
 
-        public Criteria andGroupIdNotIn(List<Long> values) {
-            addCriterion("group_id not in", values, "groupId");
+        public Criteria andGroupAvatarLessThanOrEqualTo(String value) {
+            addCriterion("group_avatar <=", value, "groupAvatar");
             return (Criteria) this;
         }
 
-        public Criteria andGroupIdBetween(Long value1, Long value2) {
-            addCriterion("group_id between", value1, value2, "groupId");
+        public Criteria andGroupAvatarLike(String value) {
+            addCriterion("group_avatar like", value, "groupAvatar");
             return (Criteria) this;
         }
 
-        public Criteria andGroupIdNotBetween(Long value1, Long value2) {
-            addCriterion("group_id not between", value1, value2, "groupId");
+        public Criteria andGroupAvatarNotLike(String value) {
+            addCriterion("group_avatar not like", value, "groupAvatar");
+            return (Criteria) this;
+        }
+
+        public Criteria andGroupAvatarIn(List<String> values) {
+            addCriterion("group_avatar in", values, "groupAvatar");
+            return (Criteria) this;
+        }
+
+        public Criteria andGroupAvatarNotIn(List<String> values) {
+            addCriterion("group_avatar not in", values, "groupAvatar");
+            return (Criteria) this;
+        }
+
+        public Criteria andGroupAvatarBetween(String value1, String value2) {
+            addCriterion("group_avatar between", value1, value2, "groupAvatar");
+            return (Criteria) this;
+        }
+
+        public Criteria andGroupAvatarNotBetween(String value1, String value2) {
+            addCriterion("group_avatar not between", value1, value2, "groupAvatar");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorIsNull() {
+            addCriterion("creator is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorIsNotNull() {
+            addCriterion("creator is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorEqualTo(String value) {
+            addCriterion("creator =", value, "creator");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorNotEqualTo(String value) {
+            addCriterion("creator <>", value, "creator");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorGreaterThan(String value) {
+            addCriterion("creator >", value, "creator");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorGreaterThanOrEqualTo(String value) {
+            addCriterion("creator >=", value, "creator");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorLessThan(String value) {
+            addCriterion("creator <", value, "creator");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorLessThanOrEqualTo(String value) {
+            addCriterion("creator <=", value, "creator");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorLike(String value) {
+            addCriterion("creator like", value, "creator");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorNotLike(String value) {
+            addCriterion("creator not like", value, "creator");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorIn(List<String> values) {
+            addCriterion("creator in", values, "creator");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorNotIn(List<String> values) {
+            addCriterion("creator not in", values, "creator");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorBetween(String value1, String value2) {
+            addCriterion("creator between", value1, value2, "creator");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorNotBetween(String value1, String value2) {
+            addCriterion("creator not between", value1, value2, "creator");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerIsNull() {
+            addCriterion("owner is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerIsNotNull() {
+            addCriterion("owner is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerEqualTo(String value) {
+            addCriterion("owner =", value, "owner");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerNotEqualTo(String value) {
+            addCriterion("owner <>", value, "owner");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerGreaterThan(String value) {
+            addCriterion("owner >", value, "owner");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerGreaterThanOrEqualTo(String value) {
+            addCriterion("owner >=", value, "owner");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerLessThan(String value) {
+            addCriterion("owner <", value, "owner");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerLessThanOrEqualTo(String value) {
+            addCriterion("owner <=", value, "owner");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerLike(String value) {
+            addCriterion("owner like", value, "owner");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerNotLike(String value) {
+            addCriterion("owner not like", value, "owner");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerIn(List<String> values) {
+            addCriterion("owner in", values, "owner");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerNotIn(List<String> values) {
+            addCriterion("owner not in", values, "owner");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerBetween(String value1, String value2) {
+            addCriterion("owner between", value1, value2, "owner");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerNotBetween(String value1, String value2) {
+            addCriterion("owner not between", value1, value2, "owner");
             return (Criteria) this;
         }
 

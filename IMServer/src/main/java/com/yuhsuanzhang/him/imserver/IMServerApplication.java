@@ -31,7 +31,7 @@ import javax.annotation.PreDestroy;
 @EnableAsync
 @EnableKafka
 @EnableConfigurationProperties(ZookeeperRegistryConfig.class)
-@MapperScan({"com.yuhsuanzhang.him.imserver.mapper"})
+//@MapperScan({"com.yuhsuanzhang.him.imserver.mapper"})
 @Slf4j
 public class IMServerApplication implements CommandLineRunner {
 

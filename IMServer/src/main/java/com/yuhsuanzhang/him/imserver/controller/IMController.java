@@ -1,7 +1,10 @@
 package com.yuhsuanzhang.him.imserver.controller;
 
+import com.yuhsuanzhang.him.imcommon.entity.IMMessage;
+import com.yuhsuanzhang.him.imcommon.entity.IMMessageProto;
 import com.yuhsuanzhang.him.imserver.config.ZookeeperRegistry;
 import com.yuhsuanzhang.him.imserver.config.ZookeeperRegistryConfig;
+import com.yuhsuanzhang.him.imserver.service.IMMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.Redisson;
 import org.redisson.api.RMap;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,20 +38,39 @@ public class IMController {
     private ZookeeperRegistry zookeeperRegistry;
 
     @Resource
+    private IMMessageService imMessageService;
+
+    @Resource
     private ZookeeperRegistryConfig zookeeperRegistryConfig;
 
     @GetMapping("/meta")
-    public String meta() {
+    public String meta() throws Exception {
         // 使用RMap替代ConcurrentHashMap
         RMap<String, String> maps = redissonClient.getMap("myMap");
         Map<String, String> map = new ConcurrentHashMap<>();
         maps.put("key1", "value1");
         maps.put("key2", "value2");
-        RMap<String,String> m = redissonClient.getMap("myMap");
+        RMap<String, String> m = redissonClient.getMap("myMap");
         log.info("m list:{}", m.keySet());
         maps.put("key3", "value2");
-        RMap<String,String> m2 = redissonClient.getMap("myMap");
+        RMap<String, String> m2 = redissonClient.getMap("myMap");
         log.info("m2 list:{}", m2.keySet());
+        imMessageService.saveIMMessage(IMMessage.builder()
+                .id(1L)
+                .content("hello world")
+                .senderId(1L)
+                .receiverId(2L)
+                .previousMessageId(0L)
+                .receiverType(0)
+                .messageType(0)
+                .sendTime(LocalDateTime.now())
+                .deviceType(0)
+                .createTime(LocalDateTime.now())
+                .updateTime(LocalDateTime.now())
+                .version(0)
+                .build());
+        IMMessage imMessage = imMessageService.getIMMessageById(7);
+        log.info("IMMessage : [{}]", imMessage);
         try {
             List<String> list = zookeeperRegistry.discover("zyx");
             log.info("zk list:{}", list);

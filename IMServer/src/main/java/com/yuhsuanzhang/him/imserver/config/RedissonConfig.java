@@ -35,20 +35,6 @@ public class RedissonConfig {
     @Value("${spring.redis.password}")
     private String password;
 
-//    @Override
-//    public void afterPropertiesSet() throws Exception {
-//        if (redissonClient != null) {
-//            return;
-//        }
-//        Config config = new Config();
-//        config.useSingleServer()
-//                .setAddress("redis://" + host + ":" + port);
-//        if (!StringUtils.isEmpty(password)) {
-//            config.useSingleServer().setPassword(password);
-//        }
-//        redissonClient = Redisson.create(config);
-//        log.info("Redisson created");
-//    }
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)

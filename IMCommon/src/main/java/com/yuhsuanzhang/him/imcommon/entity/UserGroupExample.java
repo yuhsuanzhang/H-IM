@@ -1,17 +1,17 @@
-package com.yuhsuanzhang.him.imcommon.entity.example;
+package com.yuhsuanzhang.him.imcommon.entity;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class UserMessageExample {
+public class UserGroupExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public UserMessageExample() {
+    public UserGroupExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
@@ -165,66 +165,6 @@ public class UserMessageExample {
             return (Criteria) this;
         }
 
-        public Criteria andMessageIdIsNull() {
-            addCriterion("message_id is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andMessageIdIsNotNull() {
-            addCriterion("message_id is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andMessageIdEqualTo(Long value) {
-            addCriterion("message_id =", value, "messageId");
-            return (Criteria) this;
-        }
-
-        public Criteria andMessageIdNotEqualTo(Long value) {
-            addCriterion("message_id <>", value, "messageId");
-            return (Criteria) this;
-        }
-
-        public Criteria andMessageIdGreaterThan(Long value) {
-            addCriterion("message_id >", value, "messageId");
-            return (Criteria) this;
-        }
-
-        public Criteria andMessageIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("message_id >=", value, "messageId");
-            return (Criteria) this;
-        }
-
-        public Criteria andMessageIdLessThan(Long value) {
-            addCriterion("message_id <", value, "messageId");
-            return (Criteria) this;
-        }
-
-        public Criteria andMessageIdLessThanOrEqualTo(Long value) {
-            addCriterion("message_id <=", value, "messageId");
-            return (Criteria) this;
-        }
-
-        public Criteria andMessageIdIn(List<Long> values) {
-            addCriterion("message_id in", values, "messageId");
-            return (Criteria) this;
-        }
-
-        public Criteria andMessageIdNotIn(List<Long> values) {
-            addCriterion("message_id not in", values, "messageId");
-            return (Criteria) this;
-        }
-
-        public Criteria andMessageIdBetween(Long value1, Long value2) {
-            addCriterion("message_id between", value1, value2, "messageId");
-            return (Criteria) this;
-        }
-
-        public Criteria andMessageIdNotBetween(Long value1, Long value2) {
-            addCriterion("message_id not between", value1, value2, "messageId");
-            return (Criteria) this;
-        }
-
         public Criteria andUserIdIsNull() {
             addCriterion("user_id is null");
             return (Criteria) this;
@@ -282,6 +222,66 @@ public class UserMessageExample {
 
         public Criteria andUserIdNotBetween(Long value1, Long value2) {
             addCriterion("user_id not between", value1, value2, "userId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGroupIdIsNull() {
+            addCriterion("group_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGroupIdIsNotNull() {
+            addCriterion("group_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGroupIdEqualTo(Long value) {
+            addCriterion("group_id =", value, "groupId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGroupIdNotEqualTo(Long value) {
+            addCriterion("group_id <>", value, "groupId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGroupIdGreaterThan(Long value) {
+            addCriterion("group_id >", value, "groupId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGroupIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("group_id >=", value, "groupId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGroupIdLessThan(Long value) {
+            addCriterion("group_id <", value, "groupId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGroupIdLessThanOrEqualTo(Long value) {
+            addCriterion("group_id <=", value, "groupId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGroupIdIn(List<Long> values) {
+            addCriterion("group_id in", values, "groupId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGroupIdNotIn(List<Long> values) {
+            addCriterion("group_id not in", values, "groupId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGroupIdBetween(Long value1, Long value2) {
+            addCriterion("group_id between", value1, value2, "groupId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGroupIdNotBetween(Long value1, Long value2) {
+            addCriterion("group_id not between", value1, value2, "groupId");
             return (Criteria) this;
         }
 

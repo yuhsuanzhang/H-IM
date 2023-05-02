@@ -1,7 +1,7 @@
 package com.yuhsuanzhang.him.imserver.mapper;
 
 import com.yuhsuanzhang.him.imcommon.entity.UserGroup;
-import com.yuhsuanzhang.him.imcommon.entity.example.UserGroupExample;
+import com.yuhsuanzhang.him.imcommon.entity.UserGroupExample;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

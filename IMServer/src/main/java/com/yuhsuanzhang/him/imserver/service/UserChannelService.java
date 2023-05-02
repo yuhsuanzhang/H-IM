@@ -1,23 +1,30 @@
 package com.yuhsuanzhang.him.imserver.service;
 
+import com.yuhsuanzhang.him.imcommon.entity.IMMessageProto;
+import com.yuhsuanzhang.him.imcommon.enums.MessageTypeEnum;
 import com.yuhsuanzhang.him.imserver.config.RedissonConfig;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.redisson.Redisson;
 import org.redisson.api.RMap;
+import org.redisson.api.RTransaction;
 import org.redisson.api.RedissonClient;
+import org.redisson.api.TransactionOptions;
 import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -30,6 +37,9 @@ public class UserChannelService {
 
     @Resource
     private RedissonClient redissonClient;
+
+    @Resource
+    private TransactionTemplate transactionTemplate;
 //    private RedissonClient redissonClient = RedissonConfig.getRedissonClient();
 
 //    public void setRedissonClient(RedissonClient redissonClient) {
@@ -50,12 +60,23 @@ public class UserChannelService {
     @Value("${im.server.id:zyx}")
     private String serverId;
 
+    // 定义存储结构的前缀
+    private static final String CHANNEL_USER_DEVICE = "CHANNEL_USER_DEVICE";
+    private static final String USER_DEVICE_CHANNEL = "USER_DEVICE_CHANNEL";
+    private static final String CHANNEL_SERVER = "CHANNEL_SERVER";
+
     // 获取 channel id 和用户 id 的 map，其中哈希表的 key 为 channel id，field 为设备号，value 为用户 id
     //key channel id
     //field 设备号
     //value 用户 id
 //    RMap<String, RMap<Integer, Long>> channelUserMap = redissonClient.getMap("channelUserMap");
-    RMap<String, RMap<Integer, Long>> channelUserMap;
+    //key channel id
+    //value 用户 id: 用户设备 id
+    RMap<String, String> channelUserDeviceMap;
+
+    //key 用户 id: 用户设备 id
+    //value channel id
+    RMap<String, String> userDeviceChannelMap;
 
     // 定义本地内存中的 channel id 对应 channel 的 map
     //key channel id
@@ -65,108 +86,70 @@ public class UserChannelService {
     // 获取 channel id 和服务器 id 的 map，其中 key 为 channel id，value 为服务器 id
     //key channel id
     //value 服务器 id
-//    RMap<String, String> channelServerMap = redissonClient.getMap("channelServerMap");
     RMap<String, String> channelServerMap;
 
     @PostConstruct
     public void init() {
         // 在依赖注入完成后，容器初始化时执行的逻辑
-        channelUserMap = redissonClient.getMap("channelUserMap");
-        channelServerMap = redissonClient.getMap("channelServerMap");
-        log.info("UserChannelService init end channelUserMap [{}] channelServerMap [{}]", channelUserMap, channelServerMap);
+        userDeviceChannelMap = redissonClient.getMap(USER_DEVICE_CHANNEL);
+        channelUserDeviceMap = redissonClient.getMap(CHANNEL_USER_DEVICE);
+        channelServerMap = redissonClient.getMap(CHANNEL_SERVER);
+        log.info("UserChannelService init end userDeviceChannelMap [{}] channelUserDeviceMap [{}] channelServerMap [{}]", userDeviceChannelMap, channelUserDeviceMap, channelServerMap);
     }
 
-
-    // 登录操作，将 channel id 与用户 id 存储到 channelUserMap 中
     public void login(ChannelHandlerContext ctx, Integer deviceId, Long userId) {
-        String channelId = ctx.channel().id().asLongText();
-        // 将 channel id 与用户 id 存储到 channelUserMap 中
-        RMap<Integer, Long> userMap = channelUserMap.get(channelId);
-        if (userMap == null) {
-            userMap = redissonClient.getMap(channelId);
-            channelUserMap.put(channelId, userMap);
-        }
-        userMap.put(deviceId, userId);
-
-        // 将 channel id 与 channel 存储到 channelIdChannelMap 中
-        channelIdChannelMap.put(channelId, ctx);
-
-        // 将 channel id 与服务器 id 存储到 channelServerMap 中
-//        String serverId = null;
-//        try {
-//            serverId = InetAddress.getLocalHost().getHostAddress();
-//        } catch (UnknownHostException e) {
-//            e.printStackTrace();
-//        }
-        channelServerMap.put(channelId, serverId);
-    }
-
-    // 注销操作，从 channelUserMap 中移除 channel id 与用户 id 的映射
-    public void logout(ChannelHandlerContext ctx, String deviceId) {
-        String channelId = ctx.channel().id().asLongText();
-        // 从 channelUserMap 中移除 channel id 与用户 id 的映射
-        RMap<Integer, Long> userMap = channelUserMap.get(channelId);
-        if (userMap != null) {
-            userMap.remove(deviceId);
-            if (userMap.isEmpty()) {
-                channelUserMap.remove(channelId);
+        // 将 Channel 和 userId/deviceId 映射关系存入 Redis
+        String channelKey = ctx.channel().id().asLongText();
+        String userDeviceKey = userId + "/" + deviceId;
+        String oldChannelKey = userDeviceChannelMap.get(userDeviceKey);
+        transactionTemplate.execute(status -> {
+            // 如果该用户已经在其他设备登录，则通知其他设备下线
+            if (oldChannelKey != null) {
+                ChannelHandlerContext oldCtx = channelIdChannelMap.get(oldChannelKey);
+                if (oldCtx != null && oldCtx.channel().isActive()) {
+                    // 向旧 Channel 发送下线通知
+                    oldCtx.writeAndFlush(IMMessageProto.IMMessage.newBuilder()
+                            .setMessageType(MessageTypeEnum.LOGOUT.getCode())
+                            .setContent("您的账号在其他设备登录，您已被迫下线！\n")
+                            .build());
+                    oldCtx.close();
+                }
             }
+            channelUserDeviceMap.put(channelKey, userDeviceKey);
+            userDeviceChannelMap.put(userDeviceKey, ctx.channel().id().asLongText());
+            // 将 Channel 和 ChannelHandlerContext 映射关系存入本地 map
+            channelIdChannelMap.put(channelKey, ctx);
+            // 更新 Channel 对应的服务器 ID
+            channelServerMap.put(channelKey, serverId);
+            return null;
+        });
+    }
+
+
+    public void logout(ChannelHandlerContext ctx) {
+        // 从 Redis 中删除 Channel 和 userId:deviceId 映射关系
+        String channelKey = ctx.channel().id().asLongText();
+        String userDeviceKey = channelUserDeviceMap.get(channelKey);
+        transactionTemplate.execute(status -> {
+            channelUserDeviceMap.remove(channelKey);
+            userDeviceChannelMap.remove(userDeviceKey);
+
+            // 从本地 map 中删除 Channel 和 ChannelHandlerContext 映射关系
+            channelIdChannelMap.remove(channelKey);
+
+            // 更新 Channel 对应的服务器 ID
+            channelServerMap.remove(channelKey);
+            return null;
+        });
+    }
+
+    public Long getUserIdByChannelId(String channelId) {
+        String userDevice = channelUserDeviceMap.get(channelId);
+        String[] parts = userDevice.split("/");
+        if (parts.length == 2) {
+            return Long.parseLong(parts[0]);
         }
-
-        // 从 channelMap 中移除 channel id 与 ChannelHandlerContext 的映射
-        channelIdChannelMap.remove(channelId);
-
-        // 将 channel id 与服务器 id map channelServerMap 中 channel id移除
-        channelServerMap.remove(channelId);
-    }
-
-    // 获取 channelUserMap 中指定 channelId 的 userMap
-    RMap<String, String> getUserMap(String channelId, String device) {
-        RMap<String, RMap<String, String>> map = redissonClient.getMap("channelUserMap");
-        RMap<String, String> userMap = map.get(channelId);
-        if (userMap == null) {
-            userMap = map.putIfAbsent(channelId, redissonClient.getMap(String.format("%s:%s", channelId, device)));
-            if (userMap == null) {
-                userMap = map.get(channelId);
-            }
-        }
-        return userMap;
-    }
-
-    // 移除 channelUserMap 中指定 channelId 的 userMap
-    void removeUserMap(String channelId) {
-        RMap<String, RMap<String, String>> map = redissonClient.getMap("channelUserMap");
-        map.remove(channelId);
-    }
-
-    // 获取 channelIdChannelMap 中指定 channelId 的 ChannelHandlerContext
-    ChannelHandlerContext getChannelHandlerContext(String channelId) {
-        return channelIdChannelMap.get(channelId);
-    }
-
-    // 添加 channelIdChannelMap 的映射关系
-    void putChannelHandlerContext(String channelId, ChannelHandlerContext ctx) {
-        channelIdChannelMap.put(channelId, ctx);
-    }
-
-    // 移除 channelIdChannelMap 中指定 channelId 的映射关系
-    void removeChannelHandlerContext(String channelId) {
-        channelIdChannelMap.remove(channelId);
-    }
-
-    // 获取 channelServerMap 中指定 channelId 的服务器 id
-    String getServerId(String channelId) {
-        return channelServerMap.get(channelId);
-    }
-
-    // 设置 channelServerMap 中指定 channelId 的服务器 id
-    void setServerId(String channelId, String serverId) {
-        channelServerMap.put(channelId, serverId);
-    }
-
-    // 移除 channelServerMap 中指定 channelId 的服务器 id
-    void removeServerId(String channelId) {
-        channelServerMap.remove(channelId);
+        return null;
     }
 
 }

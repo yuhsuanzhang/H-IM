@@ -1,7 +1,7 @@
 package com.yuhsuanzhang.him.imserver.mapper;
 
 import com.yuhsuanzhang.him.imcommon.entity.IMMessage;
-import com.yuhsuanzhang.him.imcommon.entity.example.IMMessageExample;
+import com.yuhsuanzhang.him.imcommon.entity.IMMessageExample;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

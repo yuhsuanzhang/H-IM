@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
  * @author: yuxuan.zhang@bitmain.com
  **/
 @Aspect
-@Order(2)    // 数据源的切换要在数据库事务之前, 设置AOP执行顺序(需要在事务之前，否则事务只发生在默认库中, 数值越小等级越高)
+@Order(1)    // 数据源的切换要在数据库事务之前, 设置AOP执行顺序(需要在事务之前，否则事务只发生在默认库中, 数值越小等级越高)
 @Component
 public class DataSourceAspect {
 
@@ -30,7 +30,8 @@ public class DataSourceAspect {
     @Pointcut(
 //            "!@annotation(com.x.xmall.annotation.Master) " +
             "execution(* com.yuhsuanzhang.him.*.service..*.select*(..)) " +
-            "|| execution(* com.yuhsuanzhang.him.*.service..*.get*(..))")
+                    "|| execution(* com.yuhsuanzhang.him.*.service..*.get*(..))" +
+                    "|| execution(* com.yuhsuanzhang.him.*.service..*.find*(..))")
     public void readPointcut() {
 
     }
@@ -38,12 +39,12 @@ public class DataSourceAspect {
     @Pointcut(
 //            "@annotation(com.x.xmall.annotation.Master) " +
             "execution(public * com.yuhsuanzhang.him.*.service..*.save*(..)) " +
-            "|| execution(public * com.yuhsuanzhang.him.*.service..*.insert*(..)) " +
-            "|| execution(public * com.yuhsuanzhang.him.*.service..*.update*(..)) " +
-            "|| execution(public * com.yuhsuanzhang.him.*.service..*.edit*(..)) " +
-            "|| execution(public * com.yuhsuanzhang.him.*.service..*.delete*(..)) " +
-            "|| execution(public * com.yuhsuanzhang.him.*.service..*.del*(..)) " +
-            "|| execution(public * com.yuhsuanzhang.him.*.service..*.remove*(..)) ")
+                    "|| execution(public * com.yuhsuanzhang.him.*.service..*.insert*(..)) " +
+                    "|| execution(public * com.yuhsuanzhang.him.*.service..*.update*(..)) " +
+                    "|| execution(public * com.yuhsuanzhang.him.*.service..*.edit*(..)) " +
+                    "|| execution(public * com.yuhsuanzhang.him.*.service..*.delete*(..)) " +
+                    "|| execution(public * com.yuhsuanzhang.him.*.service..*.del*(..)) " +
+                    "|| execution(public * com.yuhsuanzhang.him.*.service..*.remove*(..)) ")
     public void writePointcut() {
     }
 

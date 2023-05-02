@@ -26,7 +26,7 @@ import java.util.Map;
  * @author: yuxuan.zhang@bitmain.com
  **/
 @Configuration
-@MapperScan(basePackages = "com.portal.oa.mapper", sqlSessionTemplateRef = "sqlSessionTemplate")
+@MapperScan(basePackages = "com.yuhsuanzhang.him.imserver.mapper", sqlSessionTemplateRef = "sqlSessionTemplate")
 public class DataSourceConfig {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
@@ -102,8 +102,8 @@ public class DataSourceConfig {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
         //我采取的是注解式sql，如果加上扫描，但包下无mapper.xml会报错
-        sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*::mapper/*.xml"));
-        sqlSessionFactoryBean.setTypeAliasesPackage("com.portal.oa.entity");
+        sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:com/yuhsuanzhang/him/imserver/mapper/*.xml"));
+        sqlSessionFactoryBean.setTypeAliasesPackage("com.yuhsuanzhang.him.imcommon.entity");
         return sqlSessionFactoryBean.getObject();
     }
 

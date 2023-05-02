@@ -1,25 +1,26 @@
 package com.yuhsuanzhang.him.imserver.service;
 
 import com.yuhsuanzhang.him.imcommon.entity.User;
-import com.yuhsuanzhang.him.imcommon.entity.example.UserExample;
+import com.yuhsuanzhang.him.imcommon.entity.UserExample;
 import com.yuhsuanzhang.him.imserver.mapper.UserMapper;
 import com.yuhsuanzhang.him.imserver.util.HashUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.redisson.api.RLock;
 import org.redisson.api.RReadWriteLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @Author yuxuan.zhang
  * @Description
  */
+@Slf4j
 @Service
 public class UserService {
+
     @Resource
     private UserMapper userMapper;
     @Resource
@@ -73,6 +74,7 @@ public class UserService {
             UserExample example = new UserExample();
             example.createCriteria().andAccountEqualTo(account).andPasswordEqualTo(password);
             List<User> userList = userMapper.selectByExample(example);
+            if (userList == null || userList.size() == 0) return null;
             return userList.get(0);
         } finally {
             rwLock.readLock().unlock();
@@ -83,17 +85,15 @@ public class UserService {
         if (user == null || StringUtils.isEmpty(user.getAccount()) || StringUtils.isEmpty(user.getPassword())) {
             return false;
         }
-        user.setPassword(HashUtil.hash(user.getPassword()));
-        RLock lock = redissonClient.getLock("user:insert");
         boolean result = false;
         try {
-            if (lock.tryLock(3, 10, TimeUnit.SECONDS)) {
-                result = userMapper.insert(user) > 0;
-            }
-        } catch (InterruptedException e) {
+            user.setPassword(HashUtil.hash(user.getPassword()));
+            //建账号为唯一索引，故插入不需要锁
+            result = userMapper.insert(user) > 0;
+        } catch (Exception e) {
+            log.error("Insert into table user error [{}] ", e.getMessage());
             e.printStackTrace();
         } finally {
-            lock.unlock();
         }
         return result;
     }

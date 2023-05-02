@@ -40,6 +40,9 @@ public class IMHandler extends SimpleChannelInboundHandler<IMMessageProto.IMMess
     @Resource
     private UserChannelService userChannelService;
 
+    @Resource
+    private IMMessageHandler imMessageHandler;
+
 //    @Resource
 //    private UserSessionHolder userSessionHolder;
 
@@ -53,6 +56,7 @@ public class IMHandler extends SimpleChannelInboundHandler<IMMessageProto.IMMess
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        userChannelService.logout(ctx);
         super.channelInactive(ctx);
         //RMap<String, ChannelHandlerContext> clients = redissonClient.getMap("clients");
 //        RMap<String, List<String>> groups = redissonClient.getMap("groups");
@@ -71,22 +75,39 @@ public class IMHandler extends SimpleChannelInboundHandler<IMMessageProto.IMMess
             return;
         }
         if (message.getMessageType() == MessageTypeEnum.LOGIN.getCode()) {
-            if (StringUtils.isEmpty(message.getContent())) {
-                log.info("Received message content is null while login channel id [{}]", ctx.channel().id().asLongText());
-                return;
-            }
-            if (message.getContent().contains("/")) {
-                String[] content = message.getContent().split("/");
-                String account = content[0];
-                String password = content[1];
-                User user = userService.getUser(account, password);
-                if (user == null) {
-                    log.info("Received message user is null while login account [{}]", account);
-                    return;
-                }
-                userChannelService.login(ctx, message.getDeviceType(), user.getId());
-                log.info("Received message user is login account [{}]", account);
-            }
+            imMessageHandler.login(ctx, message);
+            return;
+        }
+        if (message.getMessageType() == MessageTypeEnum.LOGOUT.getCode()) {
+            imMessageHandler.logout(ctx, message);
+            return;
+        }
+        if (message.getMessageType() == MessageTypeEnum.PING.getCode()) {
+            imMessageHandler.ping(ctx, message);
+            return;
+        }
+        if (message.getMessageType() == MessageTypeEnum.TEXT.getCode()) {
+            imMessageHandler.text(ctx, message);
+            return;
+        }
+        if (message.getMessageType() == MessageTypeEnum.IMAGE.getCode()) {
+            imMessageHandler.image(ctx, message);
+            return;
+        }
+        if (message.getMessageType() == MessageTypeEnum.VOICE.getCode()) {
+            imMessageHandler.voice(ctx, message);
+            return;
+        }
+        if (message.getMessageType() == MessageTypeEnum.VIDEO.getCode()) {
+            imMessageHandler.video(ctx, message);
+            return;
+        }
+        if (message.getMessageType() == MessageTypeEnum.FILE.getCode()) {
+            imMessageHandler.file(ctx, message);
+            return;
+        }
+        if (message.getMessageType() == MessageTypeEnum.SYSTEM.getCode()) {
+            imMessageHandler.system(ctx, message);
             return;
         }
 //        RMap<String, ChannelHandlerContext> clients = redissonClient.getMap("clients");

@@ -1,4 +1,4 @@
-package com.yuhsuanzhang.him.imcommon.entity.example;
+package com.yuhsuanzhang.him.imcommon.entity;
 
 import java.util.ArrayList;
 import java.util.Date;

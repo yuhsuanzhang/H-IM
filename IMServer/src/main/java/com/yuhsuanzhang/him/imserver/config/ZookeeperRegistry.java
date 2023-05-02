@@ -70,7 +70,14 @@ public class ZookeeperRegistry implements Registry {
 
         // 创建临时节点
         String addressPath = servicePath + "/" + serviceAddress;
-        zkClient.create().withMode(CreateMode.EPHEMERAL).forPath(addressPath);
+        if (zkClient.checkExists().forPath(addressPath) == null) {
+            zkClient.create().withMode(CreateMode.EPHEMERAL).forPath(addressPath);
+        } else {
+            // 节点已经存在，先删除再创建
+            log.warn("Zookeeper node exist serviceName [{}] serviceAddress [{}]", serviceName, serviceAddress);
+            zkClient.delete().forPath(addressPath);
+            zkClient.create().withMode(CreateMode.EPHEMERAL).forPath(addressPath);
+        }
         log.info("Zookeeper register serviceName [{}] serviceAddress [{}]", serviceName, serviceAddress);
     }
 

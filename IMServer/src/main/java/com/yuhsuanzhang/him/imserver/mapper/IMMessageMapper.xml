@@ -111,11 +111,11 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into im_message (content, sender_id, receiver_id, 
+    insert into im_message (id, content, sender_id, receiver_id,
       previous_message_id, receiver_type, message_type, 
       send_time, device_type, create_time, 
       update_time, version)
-    values (#{content,jdbcType=VARCHAR}, #{senderId,jdbcType=BIGINT}, #{receiverId,jdbcType=BIGINT}, 
+    values (#{id,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR}, #{senderId,jdbcType=BIGINT}, #{receiverId,jdbcType=BIGINT},
       #{previousMessageId,jdbcType=BIGINT}, #{receiverType,jdbcType=TINYINT}, #{messageType,jdbcType=TINYINT}, 
       #{sendTime,jdbcType=TIMESTAMP}, #{deviceType,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{version,jdbcType=INTEGER})
@@ -126,6 +126,9 @@
     </selectKey>
     insert into im_message
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
       <if test="content != null">
         content,
       </if>
@@ -161,6 +164,9 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
       <if test="content != null">
         #{content,jdbcType=VARCHAR},
       </if>
