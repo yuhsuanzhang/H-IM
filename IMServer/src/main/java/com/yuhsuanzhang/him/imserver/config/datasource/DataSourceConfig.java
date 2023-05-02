@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -56,7 +57,7 @@ public class DataSourceConfig {
      * @Primary： 相同的bean中，优先使用用@Primary注解的bean.
      * @Qualifier:： 这个注解则指定某个bean有没有资格进行注入。
      */
-    @Primary
+    @Lazy
     @Bean(name = "dataSourceRouter") // 对应Bean: DataSourceRouter
     public javax.sql.DataSource dataSourceRouter(@Qualifier("databaseMaster") javax.sql.DataSource master, @Qualifier("databaseSlave") javax.sql.DataSource slave) {
         DataSourceRouter dataSourceRouter = new DataSourceRouter();

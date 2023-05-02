@@ -1,12 +1,20 @@
 package com.yuhsuanzhang.him.imserver.service;
 
+import com.yuhsuanzhang.him.imserver.config.RedissonConfig;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import lombok.extern.slf4j.Slf4j;
+import org.redisson.Redisson;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -17,9 +25,27 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Description
  */
 @Component
+@Slf4j
 public class UserChannelService {
+
     @Resource
     private RedissonClient redissonClient;
+//    private RedissonClient redissonClient = RedissonConfig.getRedissonClient();
+
+//    public void setRedissonClient(RedissonClient redissonClient) {
+//        this.redissonClient = redissonClient;
+//    }
+
+    public UserChannelService() {
+//        Config config = new Config();
+//        config.useSingleServer()
+//                .setAddress("redis://" + "127.0.0.1" + ":" + "6379");
+//        if (!StringUtils.isEmpty(password)) {
+//            config.useSingleServer().setPassword(password);
+//        }
+//        System.out.println("312453214231");
+//        redissonClient = Redisson.create(config);
+    }
 
     @Value("${im.server.id:zyx}")
     private String serverId;
@@ -28,7 +54,8 @@ public class UserChannelService {
     //key channel id
     //field 设备号
     //value 用户 id
-    RMap<String, RMap<Integer, Long>> channelUserMap = redissonClient.getMap("channelUserMap");
+//    RMap<String, RMap<Integer, Long>> channelUserMap = redissonClient.getMap("channelUserMap");
+    RMap<String, RMap<Integer, Long>> channelUserMap;
 
     // 定义本地内存中的 channel id 对应 channel 的 map
     //key channel id
@@ -38,7 +65,17 @@ public class UserChannelService {
     // 获取 channel id 和服务器 id 的 map，其中 key 为 channel id，value 为服务器 id
     //key channel id
     //value 服务器 id
-    RMap<String, String> channelServerMap = redissonClient.getMap("channelServerMap");
+//    RMap<String, String> channelServerMap = redissonClient.getMap("channelServerMap");
+    RMap<String, String> channelServerMap;
+
+    @PostConstruct
+    public void init() {
+        // 在依赖注入完成后，容器初始化时执行的逻辑
+        channelUserMap = redissonClient.getMap("channelUserMap");
+        channelServerMap = redissonClient.getMap("channelServerMap");
+        log.info("UserChannelService init end channelUserMap [{}] channelServerMap [{}]", channelUserMap, channelServerMap);
+    }
+
 
     // 登录操作，将 channel id 与用户 id 存储到 channelUserMap 中
     public void login(ChannelHandlerContext ctx, Integer deviceId, Long userId) {

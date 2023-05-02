@@ -303,6 +303,45 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <update id="updateByVersionKeySelective" parameterType="com.yuhsuanzhang.him.imcommon.entity.IMMessage">
+    update im_message
+    <set>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="senderId != null">
+        sender_id = #{senderId,jdbcType=BIGINT},
+      </if>
+      <if test="receiverId != null">
+        receiver_id = #{receiverId,jdbcType=BIGINT},
+      </if>
+      <if test="previousMessageId != null">
+        previous_message_id = #{previousMessageId,jdbcType=BIGINT},
+      </if>
+      <if test="receiverType != null">
+        receiver_type = #{receiverType,jdbcType=TINYINT},
+      </if>
+      <if test="messageType != null">
+        message_type = #{messageType,jdbcType=TINYINT},
+      </if>
+      <if test="sendTime != null">
+        send_time = #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deviceType != null">
+        device_type = #{deviceType,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null">
+        version = version + 1,
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT} and version = #{version,jdbcType=INTEGER}
+  </update>
   <update id="updateByPrimaryKey" parameterType="com.yuhsuanzhang.him.imcommon.entity.IMMessage">
     update im_message
     set content = #{content,jdbcType=VARCHAR},

@@ -31,9 +31,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class IMHandler extends SimpleChannelInboundHandler<IMMessageProto.IMMessage> {
 
-    @Resource
-    private RedissonClient redissonClient;
-
     @Value("${im.server.id:zyx}")
     private String serverId;
 

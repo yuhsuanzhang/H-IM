@@ -2,6 +2,7 @@ package com.yuhsuanzhang.him.imserver.service;
 
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.UUID;
@@ -11,6 +12,7 @@ import java.util.concurrent.TimeUnit;
  * @Author yuxuan.zhang
  * @Description
  */
+@Component
 public class UserSession {
 
     @Resource

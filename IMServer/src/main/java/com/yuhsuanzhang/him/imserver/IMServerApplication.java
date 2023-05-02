@@ -1,10 +1,15 @@
 package com.yuhsuanzhang.him.imserver;
 
+import com.yuhsuanzhang.him.imserver.config.RedissonConfig;
 import com.yuhsuanzhang.him.imserver.config.ZookeeperRegistry;
 import com.yuhsuanzhang.him.imserver.config.ZookeeperRegistryConfig;
 import com.yuhsuanzhang.him.imserver.server.IMServer;
+import com.yuhsuanzhang.him.imserver.service.UserChannelService;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;

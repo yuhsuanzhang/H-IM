@@ -39,10 +39,15 @@ public class IMController {
     @GetMapping("/meta")
     public String meta() {
         // 使用RMap替代ConcurrentHashMap
-//        RMap<String, String> map = redissonClient.getMap("myMap");
+        RMap<String, String> maps = redissonClient.getMap("myMap");
         Map<String, String> map = new ConcurrentHashMap<>();
-        map.put("key1", "value1");
-        map.put("key2", "value2");
+        maps.put("key1", "value1");
+        maps.put("key2", "value2");
+        RMap<String,String> m = redissonClient.getMap("myMap");
+        log.info("m list:{}", m.keySet());
+        maps.put("key3", "value2");
+        RMap<String,String> m2 = redissonClient.getMap("myMap");
+        log.info("m2 list:{}", m2.keySet());
         try {
             List<String> list = zookeeperRegistry.discover("zyx");
             log.info("zk list:{}", list);
@@ -50,7 +55,7 @@ public class IMController {
             log.error(e.toString());
             e.printStackTrace();
         }
-        kafkaTemplate.send("employee-change", map);
+        kafkaTemplate.send("employee", map);
 //        kafkaTemplate.send("employee-leave", "employee-leave");
         return "ok";
     }
