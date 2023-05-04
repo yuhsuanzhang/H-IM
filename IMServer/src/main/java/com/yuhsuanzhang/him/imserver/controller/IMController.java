@@ -10,6 +10,7 @@ import org.redisson.Redisson;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,8 +32,11 @@ public class IMController {
     @Resource
     private RedissonClient redissonClient;
 
-    @Resource
-    private KafkaTemplate<String, Object> kafkaTemplate;
+    @Autowired
+    private KafkaTemplate<String, Object> kafkaTemplateJson;
+
+    @Autowired
+    private KafkaTemplate<String, byte[]> kafkaTemplateByte;
 
     @Resource
     private ZookeeperRegistry zookeeperRegistry;
@@ -48,7 +52,6 @@ public class IMController {
         // 使用RMap替代ConcurrentHashMap
         RMap<String, String> maps = redissonClient.getMap("myMap");
         Map<String, String> map = new ConcurrentHashMap<>();
-        maps.put("key1", "value1");
         maps.put("key2", "value2");
         RMap<String, String> m = redissonClient.getMap("myMap");
         log.info("m list:{}", m.keySet());
@@ -70,15 +73,20 @@ public class IMController {
                 .version(0)
                 .build());
         IMMessage imMessage = imMessageService.getIMMessageById(7);
-        log.info("IMMessage : [{}]", imMessage);
+//        log.info("IMMessage : [{}]", imMessage);
         try {
             List<String> list = zookeeperRegistry.discover("zyx");
-            log.info("zk list:{}", list);
+//            log.info("zk list:{}", list);
         } catch (Exception e) {
             log.error(e.toString());
             e.printStackTrace();
         }
-        kafkaTemplate.send("employee", map);
+        IMMessageProto.IMMessage imMessage1 = IMMessageProto.IMMessage.newBuilder().setContent("hello").build();
+        map.put("key1", "value1");
+        kafkaTemplateJson.send("kafka-json", map);
+        kafkaTemplateByte.send("kafka-byte", imMessage1.toByteArray());
+//        kafkaTemplateJson.send("employee-test", map);
+//        kafkaTemplateByte.send("employee-test1", imMessage1.toByteArray());
 //        kafkaTemplate.send("employee-leave", "employee-leave");
         return "ok";
     }

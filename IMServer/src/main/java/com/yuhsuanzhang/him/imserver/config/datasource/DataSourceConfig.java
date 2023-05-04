@@ -2,6 +2,7 @@ package com.yuhsuanzhang.him.imserver.config.datasource;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.yuhsuanzhang.him.imcommon.enums.DataSourceEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -18,26 +20,26 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import javax.annotation.Resource;
+import javax.sql.DataSource;
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * @description: 数据源配置
  * @author: yuxuan.zhang@bitmain.com
  **/
+@Slf4j
 @Configuration
+@EnableConfigurationProperties(DruidDataSourceProperties.class)
 @MapperScan(basePackages = "com.yuhsuanzhang.him.imserver.mapper", sqlSessionTemplateRef = "sqlSessionTemplate")
 public class DataSourceConfig {
 
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+    @Resource
+    private DruidDataSourceProperties druidDataSourceProperties;
 
-    public final static String masterTransactionManager = "masterTransactionManager";
-
-    public final static String slaveTransactionManager = "slaveTransactionManager";
-
-    /***
-     * 注意这里用的 Druid 连接池
-     */
     @Bean(name = "databaseMaster")
     @ConfigurationProperties(prefix = "spring.datasource.mysql.master")
     public javax.sql.DataSource databaseMaster() {
@@ -59,27 +61,52 @@ public class DataSourceConfig {
      */
     @Lazy
     @Bean(name = "dataSourceRouter") // 对应Bean: DataSourceRouter
-    public javax.sql.DataSource dataSourceRouter(@Qualifier("databaseMaster") javax.sql.DataSource master, @Qualifier("databaseSlave") javax.sql.DataSource slave) {
+    public javax.sql.DataSource dataSourceRouter(@Qualifier("databaseMaster") javax.sql.DataSource master,
+                                                 @Qualifier("databaseSlave") javax.sql.DataSource slave) {
         DataSourceRouter dataSourceRouter = new DataSourceRouter();
-        log.info(" ---------------------- 德鲁伊配置信息 BEGIN----------------------");
-        DruidDataSource druidDataSourceMaster = (DruidDataSource) master;
-        DruidDataSource druidDataSourceSlave = (DruidDataSource) slave;
-        log.info("master: ");
-        log.info("检测连接是否有效的sql: " + druidDataSourceMaster.getValidationQuery());
-        log.info("最小空闲连接池数量: " + druidDataSourceMaster.getMinIdle());
-        log.info("removeAbandoned功能: " + druidDataSourceMaster.removeAbandoned());
-        log.info("超过时间限制时间(单位秒): " + druidDataSourceMaster.getRemoveAbandonedTimeout());
-        log.info("slave: ");
-        log.info("检测连接是否有效的sql: " + druidDataSourceSlave.getValidationQuery());
-        log.info("最小空闲连接池数量: " + druidDataSourceSlave.getMinIdle());
-        log.info("removeAbandoned功能: " + druidDataSourceSlave.removeAbandoned());
-        log.info("超过时间限制时间(单位秒): " + druidDataSourceSlave.getRemoveAbandonedTimeout());
-        log.info(" ---------------------- 德鲁伊配置信息 END----------------------");
-
         //配置多数据源
         Map<Object, Object> map = new HashMap<>(5);
         map.put(DataSourceEnum.MASTER.getName(), master);    // key需要跟ThreadLocal中的值对应
         map.put(DataSourceEnum.SLAVE.getName(), slave);
+        log.info(" ---------------------- druid properties BEGIN----------------------");
+        for (Object name : map.keySet()) {
+            log.info("Data source name [{}]", name);
+            DruidDataSource source = (DruidDataSource) map.get(name);
+            source.setInitialSize(druidDataSourceProperties.getInitialSize());
+            source.setMinIdle(druidDataSourceProperties.getMinIdle());
+            source.setMaxActive(druidDataSourceProperties.getMaxActive());
+            source.setMaxWait(druidDataSourceProperties.getMaxWait());
+            source.setPoolPreparedStatements(druidDataSourceProperties.isPoolPreparedStatements());
+            source.setMaxPoolPreparedStatementPerConnectionSize(druidDataSourceProperties.getMaxPoolPreparedStatementPerConnectionSize());
+            source.setValidationQuery(druidDataSourceProperties.getValidationQuery());
+            source.setValidationQueryTimeout(druidDataSourceProperties.getValidationQueryTimeout());
+            source.setTestWhileIdle(druidDataSourceProperties.isTestWhileIdle());
+            source.setMaxEvictableIdleTimeMillis(druidDataSourceProperties.getMaxEvictableIdleTimeMillis());
+            source.setMinEvictableIdleTimeMillis(druidDataSourceProperties.getMinEvictableIdleTimeMillis());
+            source.setTimeBetweenEvictionRunsMillis(druidDataSourceProperties.getTimeBetweenEvictionRunsMillis());
+            source.setBreakAfterAcquireFailure(druidDataSourceProperties.isBreakAfterAcquireFailure());
+            source.setConnectionErrorRetryAttempts(druidDataSourceProperties.getConnectionErrorRetryAttempts());
+            source.setLogAbandoned(druidDataSourceProperties.isLogAbandoned());
+            source.setRemoveAbandonedTimeoutMillis(druidDataSourceProperties.getRemoveAbandonedTimeoutMillis());
+            log.info("DruidDataSource initialSize: {}", source.getInitialSize());
+            log.info("DruidDataSource minIdle: {}", source.getMinIdle());
+            log.info("DruidDataSource maxActive: {}", source.getMaxActive());
+            log.info("DruidDataSource maxWait: {}", source.getMaxWait());
+            log.info("DruidDataSource poolPreparedStatements: {}", source.isPoolPreparedStatements());
+            log.info("DruidDataSource maxPoolPreparedStatementPerConnectionSize: {}", source.getMaxPoolPreparedStatementPerConnectionSize());
+            log.info("DruidDataSource validationQuery: {}", source.getValidationQuery());
+            log.info("DruidDataSource validationQueryTimeout: {}", source.getValidationQueryTimeout());
+            log.info("DruidDataSource testWhileIdle: {}", source.isTestWhileIdle());
+            log.info("DruidDataSource maxEvictableIdleTimeMillis: {}", source.getMaxEvictableIdleTimeMillis());
+            log.info("DruidDataSource minEvictableIdleTimeMillis: {}", source.getMinEvictableIdleTimeMillis());
+            log.info("DruidDataSource timeBetweenEvictionRunsMillis: {}", source.getTimeBetweenEvictionRunsMillis());
+            log.info("DruidDataSource breakAfterAcquireFailure: {}", source.isBreakAfterAcquireFailure());
+            log.info("DruidDataSource connectionErrorRetryAttempts: {}", source.getConnectionErrorRetryAttempts());
+            log.info("DruidDataSource logAbandoned: {}", source.isLogAbandoned());
+            log.info("DruidDataSource removeAbandonedTimeoutMillis: {}", source.getRemoveAbandonedTimeoutMillis());
+
+        }
+        log.info(" ---------------------- druid properties END----------------------");
         // master 作为默认数据源
         dataSourceRouter.setDefaultTargetDataSource(master);
         dataSourceRouter.setTargetDataSources(map);
@@ -109,6 +136,7 @@ public class DataSourceConfig {
 
     /**
      * 配置 SqlSessionTemplate
+     *
      * @param sqlSessionFactory
      * @return
      * @throws Exception

@@ -1,20 +1,22 @@
 server:
   port: 8080
 spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
   main:
     web-application-type: SERVLET
-#  cloud:
-#    zookeeper:
-#      connect-string: 127.0.0.1:2181  # ZooKeeper 服务器地址
-#      block-until-connected: true  # 是否在启动时阻塞，直到连接到 ZooKeeper
-#      discovery:
-#        enabled: true  # 是否启用服务发现功能
-#        register: true  # 是否注册当前应用到 ZooKeeper
-#        prefer-ip-address: true  # 是否使用 IP 地址代替主机名
-#        instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}  # 实例 ID
-#      retry:
-#        max-retries: 3  # 最大重试次数
-#        interval-ms: 1000  # 重试间隔时间（毫秒）
+  #  cloud:
+  #    zookeeper:
+  #      connect-string: 127.0.0.1:2181  # ZooKeeper 服务器地址
+  #      block-until-connected: true  # 是否在启动时阻塞，直到连接到 ZooKeeper
+  #      discovery:
+  #        enabled: true  # 是否启用服务发现功能
+  #        register: true  # 是否注册当前应用到 ZooKeeper
+  #        prefer-ip-address: true  # 是否使用 IP 地址代替主机名
+  #        instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}  # 实例 ID
+  #      retry:
+  #        max-retries: 3  # 最大重试次数
+  #        interval-ms: 1000  # 重试间隔时间（毫秒）
   zookeeper:
     address: 127.0.0.1:2181
     basePath: "/registry"
@@ -23,27 +25,42 @@ spring:
     retryTimes: 3
     sleepMsBetweenRetries: 1000
   datasource:
+    #druid相关配置
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      # 初始化连接数
+      initial-size: 5
+      # 最小空闲连接数
+      min-idle: 5
+      # 最大连接数
+      max-active: 20
+      # 获取连接时最大等待时间，单位毫秒，超时则抛出异常
+      max-wait: 60000
+      # 是否开启PSCache
+      pool-prepared-statements: true
+      # 每个连接上PSCache的大小
+      max-pool-prepared-statement-per-connection-size: 20
+      # 检测连接是否有效的SQL查询语句
+      validation-query: SELECT 1 FROM DUAL
+      # 检测连接是否有效的超时时间
+      validation-query-timeout: 5
+      # 连接空闲时是否检查连接是否有效
+      test-while-idle: true
+      # 连接在池中最大生存时间
+      max-evictable-idle-time-millis: 1800000
+      # 连接在池中最小空闲时间
+      min-evictable-idle-time-millis: 300000
+      # 定时检查空闲连接的周期，单位毫秒
+      time-between-eviction-runs-millis: 60000
+      # 连接池异常时，是否重试获取连接
+      break-after-acquire-failure: true
+      # 连接池异常时，尝试重试的次数
+      connection-error-retry-attempts: 3
+      # 异常时，是否打印连接池的日志
+      log-abandoned: true
+      # 是否移除泄漏的连接，单位毫秒
+      remove-abandoned-timeout-millis: 300000
     mysql:
-      name: springboot
-      type: com.alibaba.druid.pool.DruidDataSource
-      #druid相关配置
-      druid:
-        #监控统计拦截的filters
-        filter: stat
-        #mysql驱动
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        #基本属性
-        #      url: jdbc:mysql://127.0.0.1:3306/bitmain_oa?useUnicode=true&character_set_server=utf8mb4&allowMultiQueries=true
-        #      username: root
-        #      password: $8?BmcT{7WT<pAi{k]
-        #配置初始化大小/最小/最大
-        initial-size: 1
-        min-idle: 1
-        max-active: 20
-        #获取连接等待超时时间
-        max-wait: 60000
-        #间隔多久进行一次检测，检测需要关闭的空闲连接
-        time-between-eviction-runs-millis: 60000
       master:
         username: dev
         password: gPD2LP6etb4SJDS7P1JP
@@ -65,41 +82,42 @@ spring:
     producer:
       retries: 0
     consumer:
-      group-id: my-group-id
+      json-group-id: json
+      byte-array-group-id: byte-array
   #  kafka:
-#    template:
-#      default-topic: test
-#    bootstrap-servers: alikafka-pre-cn-5yd369pq3007-1.alikafka.aliyuncs.com:9093
-#    jaas:
-#      enabled: true
-#      loginModule: org.apache.kafka.common.security.plain.PlainLoginModule
-#      options:
-#        username: alikafka_pre-cn-5yd369pq3007
-#        password: zqOzox4cPKOvEu7IlLvuFmXxX3tx6nWm
-#    consumer:
-#      ssl:
-#        truststoreLocation: file:/Users/bitmain/kafka.client.truststore.jks
-#      properties:
-#        sasl.mechanism: PLAIN
-#        security.protocol: SASL_SSL
-#        ssl.endpoint.identification.algorithm:
-#      group-id: iam
-#      max-poll-records: 2
-#    producer:
-#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-#      ssl:
-#        truststoreLocation: file:/Users/bitmain/kafka.client.truststore.jks
-#      retries: 3
-#      acks: 1
-#      compression-type: lz4
-#      buffer-memory: 33554432
-#      batch-size: 51200
-#      properties:
-#        send.buffer.bytes: 262144
-#        sasl.mechanism: PLAIN
-#        security.protocol: SASL_SSL
-#        ssl.endpoint.identification.algorithm:
+  #    template:
+  #      default-topic: test
+  #    bootstrap-servers: alikafka-pre-cn-5yd369pq3007-1.alikafka.aliyuncs.com:9093
+  #    jaas:
+  #      enabled: true
+  #      loginModule: org.apache.kafka.common.security.plain.PlainLoginModule
+  #      options:
+  #        username: alikafka_pre-cn-5yd369pq3007
+  #        password: zqOzox4cPKOvEu7IlLvuFmXxX3tx6nWm
+  #    consumer:
+  #      ssl:
+  #        truststoreLocation: file:/Users/bitmain/kafka.client.truststore.jks
+  #      properties:
+  #        sasl.mechanism: PLAIN
+  #        security.protocol: SASL_SSL
+  #        ssl.endpoint.identification.algorithm:
+  #      group-id: iam
+  #      max-poll-records: 2
+  #    producer:
+  #      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+  #      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  #      ssl:
+  #        truststoreLocation: file:/Users/bitmain/kafka.client.truststore.jks
+  #      retries: 3
+  #      acks: 1
+  #      compression-type: lz4
+  #      buffer-memory: 33554432
+  #      batch-size: 51200
+  #      properties:
+  #        send.buffer.bytes: 262144
+  #        sasl.mechanism: PLAIN
+  #        security.protocol: SASL_SSL
+  #        ssl.endpoint.identification.algorithm:
   application:
     name: HIM
 im:
