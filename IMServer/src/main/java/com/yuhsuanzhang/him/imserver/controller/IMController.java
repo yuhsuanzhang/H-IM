@@ -6,17 +6,26 @@ import com.yuhsuanzhang.him.imserver.config.ZookeeperRegistry;
 import com.yuhsuanzhang.him.imserver.config.ZookeeperRegistryConfig;
 import com.yuhsuanzhang.him.imserver.service.IMMessageService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.session.SqlSession;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.redisson.Redisson;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,6 +37,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @RestController
 @Slf4j
 public class IMController {
+
+    @Resource
+    private SqlSessionTemplate sqlSessionTemplate;
 
     @Resource
     private RedissonClient redissonClient;
@@ -49,6 +61,7 @@ public class IMController {
 
     @GetMapping("/meta")
     public String meta() throws Exception {
+        Connection connection = sqlSessionTemplate.getConnection();
         // 使用RMap替代ConcurrentHashMap
         RMap<String, String> maps = redissonClient.getMap("myMap");
         Map<String, String> map = new ConcurrentHashMap<>();

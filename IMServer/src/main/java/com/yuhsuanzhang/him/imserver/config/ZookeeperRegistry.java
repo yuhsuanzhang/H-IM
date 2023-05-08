@@ -6,6 +6,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.imps.CuratorFrameworkState;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @Slf4j
@@ -41,11 +43,6 @@ public class ZookeeperRegistry implements Registry {
     @Resource
     private ZookeeperRegistryConfig zookeeperRegistryConfig;
 
-//    public ZookeeperRegistry(CuratorFramework zkClient, String basePath) {
-//        this.zkClient = zkClient;
-//        this.basePath = basePath;
-//    }
-
     public void zookeeperRegistry() {
         log.info("ZookeeperRegistry zookeeperRegistryConfig:{}", zookeeperRegistryConfig);
         this.basePath = zookeeperRegistryConfig.getBasePath();
@@ -53,15 +50,77 @@ public class ZookeeperRegistry implements Registry {
                 .connectString(zookeeperRegistryConfig.getAddress())
                 .sessionTimeoutMs(zookeeperRegistryConfig.getSessionTimeout())
                 .connectionTimeoutMs(zookeeperRegistryConfig.getConnectionTimeout())
-                .retryPolicy(new RetryNTimes(zookeeperRegistryConfig.getRetryTimes(), zookeeperRegistryConfig.getSleepMsBetweenRetries()))
+                .retryPolicy(new RetryNTimes(zookeeperRegistryConfig.getRetryTimes(),
+                        zookeeperRegistryConfig.getSleepMsBetweenRetries()))
                 .build();
         zkClient.start();
         log.info("Zookeeper started and address is {}", zookeeperRegistryConfig.getAddress());
     }
 
+    private boolean checkSessionExpiration(String from) {
+        //检查zookeeper是否连接
+        try {
+            if (zkClient.getState() != CuratorFrameworkState.STARTED) {
+                zkClient.start();
+                if (!zkClient.blockUntilConnected(30, TimeUnit.SECONDS)) {
+                    throw new IllegalStateException("Zookeeper failed to start.");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //线程等待一会Zookeeper client连上服务器
+        for (int i = 0; i < 10; i++) {
+            try {
+                if (!zkClient.getZookeeperClient().isConnected()) {
+                    Thread.sleep(100);
+                } else {
+                    break;
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                log.error("Zookeeper register thread error [{}]", e.getMessage());
+                Thread.currentThread().interrupt();
+            }
+        }
+        log.info("Zookeeper client state [{}] connected [{}]", zkClient.getState(), zkClient.getZookeeperClient().isConnected());
+        //检查zookeeper session是否过期
+        if (zkClient.getZookeeperClient().isConnected()) {
+            try {
+                zkClient.getZookeeperClient().getZooKeeper().exists("/", false);
+                return true;
+            } catch (Exception e) {
+                log.error("Failed to check Zookeeper session expiration.", e);
+                return false;
+            }
+        } else {
+            log.error("Zookeeper is not connected. from [{}]", from);
+            return false;
+        }
+    }
+
+    private void checkSessionExpirationAndReRegister(String from) {
+        // 检查zkClient的状态是否正常
+        if (!checkSessionExpiration(from)) {
+            // zkClient的session已经过期，需要重新获取session或者重新注册服务
+            zookeeperReRegister();
+        }
+    }
+
+    private void zookeeperReRegister() {
+        //重新连接zookeeper
+        try {
+            this.close();
+            zookeeperRegistry();
+        } catch (Exception e) {
+            log.error("Failed to re-register service.", e);
+        }
+    }
+
 
     @Override
     public void register(String serviceName, String serviceAddress) throws Exception {
+        this.checkSessionExpirationAndReRegister("register");
         // 创建服务节点
         String servicePath = basePath + "/" + serviceName;
         if (zkClient.checkExists().forPath(servicePath) == null) {
@@ -83,6 +142,7 @@ public class ZookeeperRegistry implements Registry {
 
     @Override
     public List<String> discover(String serviceName) throws Exception {
+        this.checkSessionExpirationAndReRegister("discover");
         // 获取服务节点下的所有地址节点
         String servicePath = basePath + "/" + serviceName;
         List<String> addressNodes = zkClient.getChildren().forPath(servicePath);
@@ -98,6 +158,7 @@ public class ZookeeperRegistry implements Registry {
 
     @Override
     public void unregister(String serviceName, String serviceAddress) throws Exception {
+        this.checkSessionExpirationAndReRegister("unregister");
         String addressPath = basePath + "/" + serviceName + "/" + serviceAddress;
         zkClient.delete().guaranteed().deletingChildrenIfNeeded().forPath(addressPath);
         log.info("Zookeeper unregister addressPath [{}]", addressPath);

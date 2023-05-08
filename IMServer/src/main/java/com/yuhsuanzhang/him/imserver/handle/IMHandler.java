@@ -43,9 +43,6 @@ public class IMHandler extends SimpleChannelInboundHandler<IMMessageProto.IMMess
     @Resource
     private IMMessageHandler imMessageHandler;
 
-//    @Resource
-//    private UserSessionHolder userSessionHolder;
-
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         //RMap<String, ChannelHandlerContext> clients = redissonClient.getMap("clients");
