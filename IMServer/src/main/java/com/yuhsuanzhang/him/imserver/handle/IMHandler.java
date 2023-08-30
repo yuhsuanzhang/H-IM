@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class IMHandler extends SimpleChannelInboundHandler<IMMessageProto.IMMessage> {
 
-    @Value("${im.server.id:zyx}")
+    @Value("${im.server.id:core-server-id}")
     private String serverId;
 
     @Resource

@@ -40,24 +40,11 @@ public class UserChannelService {
 
     @Resource
     private TransactionTemplate transactionTemplate;
-//    private RedissonClient redissonClient = RedissonConfig.getRedissonClient();
-
-//    public void setRedissonClient(RedissonClient redissonClient) {
-//        this.redissonClient = redissonClient;
-//    }
 
     public UserChannelService() {
-//        Config config = new Config();
-//        config.useSingleServer()
-//                .setAddress("redis://" + "127.0.0.1" + ":" + "6379");
-//        if (!StringUtils.isEmpty(password)) {
-//            config.useSingleServer().setPassword(password);
-//        }
-//        System.out.println("312453214231");
-//        redissonClient = Redisson.create(config);
     }
 
-    @Value("${im.server.id:zyx}")
+    @Value("${im.server.id}")
     private String serverId;
 
     // 定义存储结构的前缀

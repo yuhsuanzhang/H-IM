@@ -31,49 +31,4 @@ public class KafkaConsumer {
 
         }
     }
-
-//    @KafkaListener(topics = "kafka-test1", groupId = "${spring.kafka.consumer.byte-array-group-id}", containerFactory = "byteArrayKafkaListenerContainerFactory")
-//    public void listen3(ConsumerRecord<String, byte[]> record) {
-//        try {
-//            System.out.println("33333333Received Message first value: " + IMMessageProto.IMMessage.parseFrom((byte[]) record.value()));
-//        } catch (Exception e) {
-//            log.error("Error in listen2", e);
-//
-//        }
-//    }
-//
-//    @KafkaListener(topics = "kafka-test", groupId = "${spring.kafka.consumer.byte-array-group-id}", containerFactory = "jsonKafkaListenerContainerFactory")
-//    public void listen4(ConsumerRecord<String, Object> record) {
-//        try {
-//            System.out.println("4444444Received Message first value: " +record.value());
-//        } catch (Exception e) {
-//            log.error("Error in listen2", e);
-//
-//        }
-//    }
-//
-//    @KafkaListener(topics = "kafka-leave", groupId = "bitmain")
-//    public void listen11(ConsumerRecord<String, String> record) {
-//        System.out.println("leave first value: " + record.value());
-//    }
-//
-//    @KafkaListener(topics = "kafka-change", groupId = "ssc")
-//    public void listen2(ConsumerRecord<String, String> record) {
-//        System.out.println("Received Message second value: " + record.value());
-//    }
-//
-//    @KafkaListener(topics = "kafka-leave", groupId = "ssc")
-//    public void listen22(ConsumerRecord<String, String> record) {
-//        System.out.println("leave second value: " + record.value());
-//    }
-//
-//    @KafkaListener(topics = "kafka-change", groupId = "sophgo")
-//    public void listen3(ConsumerRecord<String, String> record) {
-//        System.out.println("Received Message third value: " + record.value());
-//    }
-//
-//    @KafkaListener(topics = "kafka-leave", groupId = "sophgo")
-//    public void listen33(ConsumerRecord<String, String> record) {
-//        System.out.println("leave third value: " + record.value());
-//    }
 }

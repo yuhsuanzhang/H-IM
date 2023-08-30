@@ -16,16 +16,16 @@ import javax.annotation.Resource;
 @Slf4j
 public class IMServer {
 
-    @Value("${im.server.port:8888}")
+    @Value("${im.server.port}")
     private int port;
 
-    @Value("${im.server.id:zyx}")
+    @Value("${im.server.id}")
     private String serverId;
 
-    @Value("${im.service.name:zyx}")
+    @Value("${im.service.name}")
     private String serviceName;
 
-    @Value("${im.service.address:127.0.0.1}")
+    @Value("${im.service.address}")
     private String serviceAddress;
 
     @Resource
